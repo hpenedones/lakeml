@@ -20,20 +20,14 @@
 #include <cmath>
 #include <float.h>
 #include <BoostedClassifier.h>
-
-// BOOST_CLASS_EXPORT(BoostedClassifier)  // This has to come after #include <classname.h> and after #include <...archive.hpp>
-
 #include <iostream>
 #include <fstream>
 
 using namespace std;
 
-// extern ofstream gbl_logstream; 
-
 
 BoostedClassifier::BoostedClassifier()
 {
-	// needed because of the serialization
 }
 
 BoostedClassifier::BoostedClassifier(const ClassifierFactory* classifier_factory_, int max_weak_learners_, int weak_learner_trials_): 
@@ -48,44 +42,9 @@ classifier_factory(classifier_factory_),
 }
 
 
-int BoostedClassifier::getNumWeakLearners(){
-
+int BoostedClassifier::getNumWeakLearners()
+{	
 	return weak_learners.size();
-}
-
-
-void BoostedClassifier::train_in_batch_mode(BufferedLabeledDataset * buffered_dataset, vector<double> & initial_data_weights, int nbatches)
-{
-	cout << "Entered train_in_batch_mode" << endl;
-	
-	for(size_t i = 0; i < initial_data_weights.size(); i++)
-	{
-		big_dataset_weights.push_back(initial_data_weights[i]);
-		big_dataset_responses.push_back(0.0);
-	}
-	
-	vector<double> active_set_data_weights(buffered_dataset->getActiveSetSize());
-
-	cout << "Initialized big_dataset_weights and big_dataset_responses" << endl;
-	
-	for(int batch = 0; batch < nbatches; batch++)
-	{
-		cout  << " batch = " << batch << endl;
-		if (batch > 0)
-			{
-				for(size_t i = 0; i < big_dataset_responses.size(); i++)
-					big_dataset_responses[i] += response(buffered_dataset->getDataInstanceAt(i), 
-														 (batch-1) * learners_to_add, learners_to_add);
-				
-			}
-			 
-		// update data weights for next round
-		loss_function->value(buffered_dataset, initial_data_weights, big_dataset_responses, big_dataset_weights);			
-		buffered_dataset->resampleActiveDataset(big_dataset_weights, active_set_data_weights);
-		
-		train(buffered_dataset->getActiveDataset(), active_set_data_weights);		
-	}
-	
 }
 
 
@@ -103,8 +62,6 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 		assert(trials_per_learner > 0);
 		assert(initial_data_weights.size() == training_dataset->size());
 	}
-	
-	cout  << " training_dataset->size() = " << training_dataset->size() << endl;
 
 	// initialize vectors with the size of the dataset
 	responses.clear();
@@ -122,14 +79,11 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 		
 	for (int wl=0; wl<learners_to_add; wl++) 
 	{
-		cout  << " wl = " << wl << endl;
 		double min_loss = DBL_MAX, best_weak_learner_weight;
 		Classifier * best_weak_learner;
 		
 		for(int trial=0; trial<trials_per_learner; trial++)
 		{
-			cout  << " trial = " << trial << endl;
-			
 			Classifier * current_weak_learner = classifier_factory->createRandomInstance();
 			current_weak_learner->train(training_dataset, curr_data_weights);
 			curr_weak_learner_predictions = current_weak_learner->classifications(training_dataset);
@@ -165,9 +119,6 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 		// update data weights for next round
 		loss_function->value(training_dataset, initial_data_weights, responses, curr_data_weights);
 		
-		// notify observers that the state has changed
-		notify(); 
-
 	}
 }
 
@@ -208,7 +159,4 @@ int BoostedClassifier::classify(const DataInstance * data_instance) const
 	double resp = response(data_instance);
 	return ((resp <= decision_threshold) ? -1 : 1);
 }
-
-
-
 

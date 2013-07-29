@@ -24,16 +24,15 @@
 #define BOOSTEDLEARNER
 
 #include <vector>
-#include <Classifier.h>
-#include <ClassifierFactory.h>
-#include <Subject.h>
-#include <BufferedLabeledDataset.h>
-#include <LossFunction.h>
 #include <iostream>
 using namespace std;
 
+#include <Classifier.h>
+#include <ClassifierFactory.h>
+#include <LossFunction.h>
+
 /// Linear combination of classifiers (weak learners) trained by the AdaBoost algorithm
-class BoostedClassifier : public Classifier, public Subject {
+class BoostedClassifier : public Classifier {
 
 public:
 	
@@ -46,7 +45,6 @@ public:
 	void   train(const LabeledDataset* training_dataset, vector<double> &weights);
 	int	   classify(const DataInstance * data_instance) const;
 	double response(const DataInstance * data_instance) const;	
-	void train_in_batch_mode(BufferedLabeledDataset * buffered_dataset, vector<double> & initial_data_weights, int nbatches);
 	// response using only the part of the weak learners 
 	double response(const DataInstance * data_instance, int first_weak_learner, int nb_weak_learners) const;
 	
@@ -61,8 +59,6 @@ private:
 	// vectors used training
 	vector<double> responses, curr_data_weights;
 	vector<int> curr_weak_learner_predictions, best_weak_learner_predictions;
-	
-	vector<double> big_dataset_responses, big_dataset_weights;
 	
 	// results of training the boosted classifier 
 	vector<double> weak_learners_weights;

@@ -17,12 +17,7 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
 #include <Classifier.h>
-
-
 
 vector<double> Classifier::responses(const Dataset * dataset) const{
 	
@@ -58,9 +53,7 @@ double Classifier::classificationError(const LabeledDataset * dataset, vector<do
 				error_mass += weights[i];
 				
 			assert(total_mass + weights[i] >= total_mass);  // check for overflow of total mass or existence of negative weights
-				
 			total_mass += weights[i];
-			
 		}
 		
 	double classification_error = error_mass / total_mass;
