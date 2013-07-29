@@ -21,7 +21,6 @@
 
 
 #include <Classifier.h>
-#include <Pose.h>
 #include <DataInstance.h>
 #include <LabeledDataset.h>
 

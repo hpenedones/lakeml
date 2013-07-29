@@ -17,24 +17,15 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
 #ifndef THRLRN
 #define THRLRN
 
 #include <Classifier.h>
 #include <FeatureExtractor.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/nvp.hpp>
-
 
 /// Simple classifier that finds the best threshold to separate two classes based on a single feature
 class ThresholdLearner : public Classifier
 {
-
-	friend class boost::serialization::access;
-
 public:
 	ThresholdLearner();
 	ThresholdLearner( FeatureExtractor * feature_extractor);
@@ -43,26 +34,14 @@ public:
 	void train(const LabeledDataset * training_dataset, vector<double> &data_weights);
 	double response(const DataInstance * data_instance) const;
 	int	   classify(const DataInstance * data_instance) const;
-
-	template<class Archive>  void serialize(Archive & ar, const unsigned int version)
-	{
-		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP( Classifier );
-		ar & BOOST_SERIALIZATION_NVP( optimal_threshold );
-		ar & BOOST_SERIALIZATION_NVP( label_on_left );
-		ar & BOOST_SERIALIZATION_NVP( feature_extractor);
-		
-	}
 	
   private:
 	
-
 	FeatureExtractor * feature_extractor;
 	double optimal_threshold;
 	int label_on_left;
 
 };
-
-
 
 #endif
 

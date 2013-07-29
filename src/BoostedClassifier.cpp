@@ -17,11 +17,7 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
 #include <cmath>
-#include <math.h>
 #include <float.h>
 #include <BoostedClassifier.h>
 
@@ -60,7 +56,6 @@ int BoostedClassifier::getNumWeakLearners(){
 
 void BoostedClassifier::train_in_batch_mode(BufferedLabeledDataset * buffered_dataset, vector<double> & initial_data_weights, int nbatches)
 {
-	
 	cout << "Entered train_in_batch_mode" << endl;
 	
 	for(size_t i = 0; i < initial_data_weights.size(); i++)
@@ -71,7 +66,6 @@ void BoostedClassifier::train_in_batch_mode(BufferedLabeledDataset * buffered_da
 	
 	vector<double> active_set_data_weights(buffered_dataset->getActiveSetSize());
 
-
 	cout << "Initialized big_dataset_weights and big_dataset_responses" << endl;
 	
 	for(int batch = 0; batch < nbatches; batch++)
@@ -80,7 +74,8 @@ void BoostedClassifier::train_in_batch_mode(BufferedLabeledDataset * buffered_da
 		if (batch > 0)
 			{
 				for(size_t i = 0; i < big_dataset_responses.size(); i++)
-					big_dataset_responses[i] += response(buffered_dataset->getDataInstanceAt(i), (batch-1) * learners_to_add, learners_to_add);
+					big_dataset_responses[i] += response(buffered_dataset->getDataInstanceAt(i), 
+														 (batch-1) * learners_to_add, learners_to_add);
 				
 			}
 			 
@@ -136,15 +131,13 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 			cout  << " trial = " << trial << endl;
 			
 			Classifier * current_weak_learner = classifier_factory->createRandomInstance();
-
 			current_weak_learner->train(training_dataset, curr_data_weights);
-			
 			curr_weak_learner_predictions = current_weak_learner->classifications(training_dataset);
-
-			double optimal_step, loss_after_step;
 			
+			double optimal_step, loss_after_step;
 			loss_function->optimal_step_along_direction(training_dataset, initial_data_weights, 
-														responses, curr_weak_learner_predictions, &optimal_step, &loss_after_step);
+														responses, curr_weak_learner_predictions,
+														&optimal_step, &loss_after_step);
 
 			if ( loss_after_step < min_loss )
 			{
@@ -212,9 +205,7 @@ double BoostedClassifier::response(const DataInstance * data_instance) const
 
 int BoostedClassifier::classify(const DataInstance * data_instance) const
 {
-
 	double resp = response(data_instance);
-
 	return ((resp <= decision_threshold) ? -1 : 1);
 }
 

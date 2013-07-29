@@ -18,20 +18,16 @@
 */
 
 
-
 #include <Classifier.h>
 #include <math_utils.h>
 #include <math.h>
 #include <FeatureExtractor.h>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/nvp.hpp>
 
 #ifndef GAUSSIANLEARNER_H_
 #define GAUSSIANLEARNER_H_
 
 class GaussianLearner: public Classifier
 {
-	friend class boost::serialization::access;
 
 public:
 	
@@ -43,32 +39,17 @@ public:
 	double response(const DataInstance * data_instance) const;
 	int	   classify(const DataInstance * data_instance) const;
 
-	template<class Archive>  void serialize(Archive & ar, const unsigned int version)
-	{
-		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP( Classifier );
-		ar & BOOST_SERIALIZATION_NVP( feature_extractor);
-		
-		ar & BOOST_SERIALIZATION_NVP( pos_class_mean );
-		ar & BOOST_SERIALIZATION_NVP( pos_class_var);
-		ar & BOOST_SERIALIZATION_NVP( neg_class_mean);
-		ar & BOOST_SERIALIZATION_NVP( neg_class_var);
-		ar & BOOST_SERIALIZATION_NVP( log_resp_shift);
-
-	}
-
 private:
 	
 	double log_probability_pos_class(double val) const; 
 	double log_probability_neg_class(double val) const; 
 	
-
 	FeatureExtractor * feature_extractor;
 
 	double pos_class_mean, pos_class_var;
 	double neg_class_mean, neg_class_var;
 	
-	double log_resp_shift;
-		
+	double log_resp_shift;	
 };
 
 

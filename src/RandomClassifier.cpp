@@ -39,7 +39,7 @@ void RandomClassifier::train(const LabeledDataset* training_dataset, vector<doub
 double RandomClassifier::response(const DataInstance * data_instance) const 
 {
 
-	if (drand48() < fraction_accept)
+	if (rand() < fraction_accept)
 		return 10000.0;
 	
 	return -10000.0;
@@ -47,7 +47,7 @@ double RandomClassifier::response(const DataInstance * data_instance) const
 
 int RandomClassifier::classify(const DataInstance * data_instance) const 
 {
-	if (drand48() < fraction_accept)
+	if (rand() < fraction_accept)
 		return 1;
 	
 	return -1;

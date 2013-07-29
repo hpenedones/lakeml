@@ -17,7 +17,7 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#include <algorithm>
 
 #include <NaiveBayesClassifier.h>
 #include <math_utils.h>

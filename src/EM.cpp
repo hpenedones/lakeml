@@ -17,7 +17,7 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#define _USE_MATH_DEFINES
 
 #include <EM.h>
 #include <cmath>
@@ -28,6 +28,7 @@
 #include <kmeans.h>
 
 using namespace std;
+
 
 	
 EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_improv)

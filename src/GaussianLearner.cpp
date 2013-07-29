@@ -18,6 +18,7 @@
 */
 
 
+#define _USE_MATH_DEFINES
 
 #include <GaussianLearner.h>
 #include <cmath>

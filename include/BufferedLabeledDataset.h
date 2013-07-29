@@ -19,7 +19,7 @@
 
 
 
-#include <assert.h>
+#include <cassert>
 #include <vector>
 #include <DataSampler.h>
 #include <DataInstanceLoader.h>

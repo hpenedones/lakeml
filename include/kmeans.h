@@ -18,12 +18,8 @@
 */
 
 
-
-
 #ifndef KMEANS_H_
 #define KMEANS_H_
-
-
 
 class Kmeans {
 
@@ -31,29 +27,21 @@ class Kmeans {
 
 public:
 
-
-	
 	Kmeans(double ** dataset, int nsamples, int dim, int nclusters);
 	~Kmeans();
 
 	int run(int max_iterations, float min_delta_improv);
-
 	void initialize();
 	void computeCenters();
 	void updateAssignments();
-
 	int getClosestClusterLabel(double * x);
-
 	double computeError();
-
 	void oneStep();
-
 
 private:	
 
 	double l2norm(double * x, double * y);
 
-		
 	int * cluster_labels, *counters;
 	double ** dataset;
 	double ** cluster_centers;
@@ -63,7 +51,5 @@ private:
 	double prev_error, error; 	
 
 };
-
-
 
 #endif

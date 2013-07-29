@@ -17,16 +17,12 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
 #include <Classifier.h>
 #include <vector>
 #include <ClassifierFactory.h>
-#include <boost/serialization/vector.hpp>
 #include <iostream>
 
 using namespace std;
-
 
 #ifndef NAIVEBAYESCLASSIFIER_H_
 #define NAIVEBAYESCLASSIFIER_H_
@@ -34,7 +30,6 @@ using namespace std;
 
 class NaiveBayesClassifier : public Classifier
 {
-	friend class boost::serialization::access;
 	
 public:
 	NaiveBayesClassifier ();
@@ -47,29 +42,13 @@ public:
 	double response(const DataInstance * data_instance) const;
 	int	   classify(const DataInstance * data_instance) const;
 	
-	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version)
-	{
-		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP( Classifier );
-		ar & BOOST_SERIALIZATION_NVP( decision_threshold );
-		ar & BOOST_SERIALIZATION_NVP( weak_learners );
-
-	}
-
 private:
 	
 	const ClassifierFactory * classifier_factory;
 	int learners_to_add;
 
-
-
 	double decision_threshold;
 	vector<Classifier *> weak_learners;
-
-	
 };
-
-
-
 
 #endif 

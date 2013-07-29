@@ -42,8 +42,9 @@ public:
 
 private:
 
-	const static double numerical_delta = 0.000001; 
-	const static double residual_mass   = 0.1;
+	static const double numerical_delta; // = 0.000001;
+	static const double residual_mass;//  = 0.1;
+
 	
 	int upper_limit;
 	int nbins;

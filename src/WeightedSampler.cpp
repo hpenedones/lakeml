@@ -113,7 +113,7 @@ double WeightedSampler::robust_sampling(vector<double> &weights, int nb_to_sampl
 	
 	for(int k = 0; k < nb_to_sample; k++) {
 	      int s = sampled[k];
-	      if(drand48() * pair_weights[s] <= weights[2 * s])
+	      if(rand() * pair_weights[s] <= weights[2 * s])
 	        sampled[k] = 2 * s;
 	      else
 	        sampled[k] = 2 * s + 1;

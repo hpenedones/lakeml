@@ -20,8 +20,12 @@
 
 
 #include <Histogram3D.h>
-#include <assert.h>
+#include <cassert>
 #include <math.h>
+
+
+const double Histogram3D::numerical_delta = 0.000001;
+const double Histogram3D::residual_mass  = 0.1;
 
 Histogram3D::Histogram3D (int nbins, int upper_limit)
 {

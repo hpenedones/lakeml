@@ -17,43 +17,18 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
 #ifndef FEATEXTRCT
 #define FEATEXTRCT
 
 #include <DataInstance.h>
 
-#ifdef USE_IS_ABSTRACT
-#include <boost/serialization/is_abstract.hpp>
-#else
-#include <boost/serialization/assume_abstract.hpp>
-#endif
-
-#include <boost/serialization/export.hpp>
-
-
-
 class FeatureExtractor {
 	
-
 public:
 	
 	virtual double getFeatureVal(const DataInstance * data_instance) const = 0;
-
-	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version)
-	{
-	}
 	
 };
-
-#ifdef USE_IS_ABSTRACT
-BOOST_IS_ABSTRACT(FeatureExtractor)
-#else
-BOOST_SERIALIZATION_ASSUME_ABSTRACT(FeatureExtractor)
-#endif
 
 #endif
 

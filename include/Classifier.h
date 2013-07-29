@@ -17,38 +17,22 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
-#include <assert.h>
+#include <cassert>
 #include <vector>
 #include <iostream>
 #include <LabeledDataset.h>
 
-#ifdef USE_IS_ABSTRACT
-#include <boost/serialization/is_abstract.hpp>
-#else
-#include <boost/serialization/assume_abstract.hpp>
-#endif
-
-//#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/export.hpp>
-
 #ifndef CLASSIFIER
 #define CLASSIFIER
 
-
-
-
-class Classifier {
-	
+class Classifier 
+{
 
 public:
 
 //	Classifier();
 //	virtual ~Classifier() = 0;
-	
-	
+		
 	virtual void   train(const LabeledDataset* training_dataset, vector<double> &weights) = 0;
 	virtual double response(const DataInstance * data_instance) const = 0;
 	virtual int	   classify(const DataInstance * data_instance) const = 0;
@@ -58,23 +42,8 @@ public:
 	
 	double classificationError(const LabeledDataset * dataset) const;
 	double classificationError(const LabeledDataset * dataset, vector<double> &weights) const;
-	
-	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version)
-	{
-	}
-	
-protected:	
 		
-
-	
 };
-
-#ifdef USE_IS_ABSTRACT
-BOOST_IS_ABSTRACT(Classifier)
-#else
-BOOST_SERIALIZATION_ASSUME_ABSTRACT(Classifier)
-#endif
 
 #endif
 

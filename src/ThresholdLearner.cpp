@@ -19,28 +19,21 @@
 
 
 
-
+#include <algorithm>
 #include <float.h>
 #include <math.h>
 #include <ThresholdLearner.h>
-#include <boost/serialization/export.hpp>
 
-// this has to come in the *.cpp file otherwise it can get included many times and originate a "bus error" at runtime
-// BOOST_CLASS_EXPORT(ThresholdLearner)
-// BOOST_CLASS_EXPORT_GUID(ThresholdLearner, "ThresholdLearner")
 
 ThresholdLearner::ThresholdLearner()
 {
-	
 }
 
 ThresholdLearner::ThresholdLearner( FeatureExtractor * feature_extractor_) : 
 feature_extractor(feature_extractor_),
 optimal_threshold(0),
 label_on_left(-1)
-{
-	
-	
+{	
 }
 
 
@@ -52,9 +45,7 @@ void ThresholdLearner::train(const LabeledDataset * training_dataset, vector<dou
 	assert(training_dataset->labelIsAllowed(1));
 	assert(training_dataset->size() > 0);
 	assert(training_dataset->size() == all_data_weights.size());
-	
-	
-	
+		
 	vector< pair<double, int> > feature_vals;
 	vector<int> true_labels;
 	vector<double> data_weights;
@@ -176,7 +167,6 @@ void ThresholdLearner::train(const LabeledDataset * training_dataset, vector<dou
 
 double ThresholdLearner::response(const DataInstance * data_instance) const
 {
-
 	double fval = feature_extractor->getFeatureVal(data_instance);
 	
 	if(!isfinite(fval))
@@ -187,7 +177,6 @@ double ThresholdLearner::response(const DataInstance * data_instance) const
 
 int	ThresholdLearner::classify(const DataInstance * data_instance) const 
 {
-
 	double resp = response(data_instance);
 	
 	if (!isfinite(resp)) return 0;
