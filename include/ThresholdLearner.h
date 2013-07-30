@@ -21,23 +21,22 @@
 #define THRLRN
 
 #include <Classifier.h>
-#include <FeatureExtractor.h>
 
 /// Simple classifier that finds the best threshold to separate two classes based on a single feature
 class ThresholdLearner : public Classifier
 {
 public:
 	ThresholdLearner();
-	ThresholdLearner( FeatureExtractor * feature_extractor);
+	ThresholdLearner( unsigned int feature_index);
 	
 	// inherited from Classifier
-	void train(const LabeledDataset * training_dataset, vector<double> &data_weights);
-	double response(const DataInstance * data_instance) const;
-	int	   classify(const DataInstance * data_instance) const;
+	void train(const Dataset & training_dataset, vector<double> &data_weights);
+	double response(const DataInstance & data_instance) const;
+	int	   classify(const DataInstance & data_instance) const;
 	
   private:
 	
-	FeatureExtractor * feature_extractor;
+	unsigned int feature_index;
 	double optimal_threshold;
 	int label_on_left;
 

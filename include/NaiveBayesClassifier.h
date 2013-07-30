@@ -38,9 +38,9 @@ public:
 	~NaiveBayesClassifier ();
 	
 	// declared virtual in Classifier
-	void   train(const LabeledDataset* training_dataset, vector<double> &weights);
-	double response(const DataInstance * data_instance) const;
-	int	   classify(const DataInstance * data_instance) const;
+	void   train(const Dataset & training_dataset, vector<double> &weights);
+	double response(const DataInstance & data_instance) const;
+	int	   classify(const DataInstance & data_instance) const;
 	
 private:
 	

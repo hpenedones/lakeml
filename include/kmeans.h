@@ -17,6 +17,7 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Dataset.h"
 
 #ifndef KMEANS_H_
 #define KMEANS_H_
@@ -27,24 +28,26 @@ class Kmeans {
 
 public:
 
-	Kmeans(double ** dataset, int nsamples, int dim, int nclusters);
+	Kmeans(const Dataset & dataset, int nclusters);
 	~Kmeans();
 
 	int run(int max_iterations, float min_delta_improv);
-	void initialize();
-	void computeCenters();
-	void updateAssignments();
-	int getClosestClusterLabel(double * x);
-	double computeError();
-	void oneStep();
+	int getClosestClusterLabel(const DataInstance & x) const;
 
 private:	
 
-	double l2norm(double * x, double * y);
+	void initialize();
+	void computeCenters();
+	void updateAssignments();
+	double computeError();
+	void oneStep();
 
-	int * cluster_labels, *counters;
-	double ** dataset;
-	double ** cluster_centers;
+
+	double l2norm(const DataInstance & x, const vector<double> & y) const;
+
+	vector<int> cluster_labels, counters;
+	Dataset dataset;
+	vector< vector<double> > cluster_centers;
 	int nclusters;
 	int nsamples, dim;
 	int iterations;

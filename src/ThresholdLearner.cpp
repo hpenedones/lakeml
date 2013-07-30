@@ -17,8 +17,6 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
 #include <algorithm>
 #include <float.h>
 #include <math.h>
@@ -29,22 +27,18 @@ ThresholdLearner::ThresholdLearner()
 {
 }
 
-ThresholdLearner::ThresholdLearner( FeatureExtractor * feature_extractor_) : 
-feature_extractor(feature_extractor_),
+ThresholdLearner::ThresholdLearner( unsigned int feature_index) : 
+feature_index(feature_index),
 optimal_threshold(0),
 label_on_left(-1)
 {	
 }
 
 
-void ThresholdLearner::train(const LabeledDataset * training_dataset, vector<double> &all_data_weights)
+void ThresholdLearner::train(const Dataset & training_dataset, vector<double> &all_data_weights)
 {
-	assert(training_dataset != NULL);
-	assert(training_dataset->numDiffLabels() == 2);
-	assert(training_dataset->labelIsAllowed(-1));
-	assert(training_dataset->labelIsAllowed(1));
-	assert(training_dataset->size() > 0);
-	assert(training_dataset->size() == all_data_weights.size());
+	assert(training_dataset.size() > 0);
+	assert(training_dataset.size() == all_data_weights.size());
 		
 	vector< pair<double, int> > feature_vals;
 	vector<int> true_labels;
@@ -54,25 +48,22 @@ void ThresholdLearner::train(const LabeledDataset * training_dataset, vector<dou
 	
 	// compute feature (real-valued number) for each data sample
 	int nsamples = 0;
-	for(unsigned int i=0; i<training_dataset->size(); i++)
+	for(unsigned int i=0; i<training_dataset.size(); i++)
 	{
-		double fval = feature_extractor->getFeatureVal(training_dataset->getDataInstanceAt(i));
+		double fval = training_dataset[i][feature_index];
 
-		cout  << "[ThresholdLearner] fval = " << fval << endl;
 		if (isfinite(fval) )  // discard samples where feature is N.A. 
 			{
 				feature_vals.push_back( pair<double, int>(fval, nsamples));
-				true_labels.push_back(training_dataset->getLabelAt(i));	
+				true_labels.push_back(training_dataset.getLabelAt(i));	
 				data_weights.push_back(all_data_weights[i]);	
 				nsamples++;
 
 			}
 	}	
 	
-
 	if( nsamples == 0)
 		{
-			//cout << "[ThresholdLearner] Warning nsamples = 0" << endl;
 			// put arbitrary values and exit (it will not be selected anyways and
 			// even if it was classifier would respond always zero)
 			min_error = DBL_MAX;
@@ -80,20 +71,10 @@ void ThresholdLearner::train(const LabeledDataset * training_dataset, vector<dou
 			label_on_left = 1;
 			return;
 		}	
+
 	// sort according to feature value
 	sort(feature_vals.begin(), feature_vals.end());  	
 
-	// DEBUG code
-	{
-	// for(size_t i = 0; i < nsamples; ++i)
-	// {
-	// 	cout << "[ThresholdLearner] fval  = " << feature_vals[i].first << 
-	// 		                      " label = " << true_labels[feature_vals[i].second] <<
-	// 							  " weight = " << data_weights[feature_vals[i].second] << endl;
-	// 	
-	// }
-	}
-	
 	// initialize variables
 	double false_positives_if_inc = 0, false_negatives_if_inc = 0;		// if negatives are on the left of decision threshold (increasing -1 : 1)
 	double false_positives_if_dec = 0, false_negatives_if_dec = 0;		// if positives are on the left of decision threshold (decreasing 1 : -1)
@@ -154,20 +135,13 @@ void ThresholdLearner::train(const LabeledDataset * training_dataset, vector<dou
 				optimal_threshold = feature_vals[i].first;
 			}
 		}
-	}
-	
-	
-	// cout << "[ThresholdLearner] optimal_threshold = " << optimal_threshold << endl;
-	// cout << "[ThresholdLearner] min_error = " << min_error << endl;
-	// cout << "[ThresholdLearner] label_on_left = " << label_on_left << endl;
-	// 
-	
+	}	
 }
 
 
-double ThresholdLearner::response(const DataInstance * data_instance) const
+double ThresholdLearner::response(const DataInstance & data_instance) const
 {
-	double fval = feature_extractor->getFeatureVal(data_instance);
+	double fval = data_instance[feature_index];
 	
 	if(!isfinite(fval))
 		return fval;
@@ -175,7 +149,7 @@ double ThresholdLearner::response(const DataInstance * data_instance) const
 	return (fval - optimal_threshold);
 }
 
-int	ThresholdLearner::classify(const DataInstance * data_instance) const 
+int	ThresholdLearner::classify(const DataInstance & data_instance) const 
 {
 	double resp = response(data_instance);
 	

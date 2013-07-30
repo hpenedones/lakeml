@@ -42,11 +42,11 @@ public:
 	int	 getNumWeakLearners();
 	
 	// declared virtual in Classifier
-	void   train(const LabeledDataset* training_dataset, vector<double> &weights);
-	int	   classify(const DataInstance * data_instance) const;
-	double response(const DataInstance * data_instance) const;	
+	void   train(const Dataset & training_dataset, vector<double> &weights);
+	int	   classify(const DataInstance & data_instance) const;
+	double response(const DataInstance & data_instance) const;	
 	// response using only the part of the weak learners 
-	double response(const DataInstance * data_instance, int first_weak_learner, int nb_weak_learners) const;
+	double response(const DataInstance & data_instance, int first_weak_learner, int nb_weak_learners) const;
 	
 private:
 

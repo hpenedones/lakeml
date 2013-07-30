@@ -48,16 +48,12 @@ int BoostedClassifier::getNumWeakLearners()
 }
 
 
-void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<double> & initial_data_weights)
+void BoostedClassifier::train(const Dataset & training_dataset, vector<double> & initial_data_weights)
 {
 	// assertions
 	{
 		assert(classifier_factory != NULL); 
-		assert(training_dataset != NULL);	
-		assert(training_dataset->size() > 0);
-		assert(training_dataset->numDiffLabels() == 2);
-		assert(training_dataset->labelIsAllowed(1));
-		assert(training_dataset->labelIsAllowed(-1));
+		assert(training_dataset.size() > 0);
 		assert(learners_to_add > 0);
 		assert(trials_per_learner > 0);
 		assert(initial_data_weights.size() == training_dataset->size());
@@ -69,7 +65,7 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 	best_weak_learner_predictions.clear();
 	curr_data_weights.clear();
 	
-	for(size_t i = 0; i < training_dataset->size(); i++)
+	for(size_t i = 0; i < training_dataset.size(); i++)
 		{
 			responses.push_back(0.0);
 			curr_weak_learner_predictions.push_back(0);
@@ -86,7 +82,7 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 		{
 			Classifier * current_weak_learner = classifier_factory->createRandomInstance();
 			current_weak_learner->train(training_dataset, curr_data_weights);
-			curr_weak_learner_predictions = current_weak_learner->classifications(training_dataset);
+			curr_weak_learner_predictions = current_weak_learner->classify(training_dataset);
 			
 			double optimal_step, loss_after_step;
 			loss_function->optimal_step_along_direction(training_dataset, initial_data_weights, 
@@ -113,7 +109,7 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 		weak_learners_weights.push_back(best_weak_learner_weight);
 
 		// update strong classifier responses
-		for(unsigned int i=0; i<training_dataset->size(); i++)
+		for(unsigned int i=0; i<training_dataset.size(); i++)
 			responses[i] += best_weak_learner_weight * best_weak_learner_predictions[i];	
 
 		// update data weights for next round
@@ -125,7 +121,7 @@ void BoostedClassifier::train(const LabeledDataset * training_dataset, vector<do
 
 
 
-double BoostedClassifier::response(const DataInstance * data_instance, int first_weak_learner, int nb_weak_learners) const 
+double BoostedClassifier::response(const DataInstance & data_instance, int first_weak_learner, int nb_weak_learners) const 
 {
 	assert( first_weak_learner >= 0);
 	assert( first_weak_learner + nb_weak_learners <= (int) weak_learners.size());
@@ -141,7 +137,7 @@ double BoostedClassifier::response(const DataInstance * data_instance, int first
 }
 
 
-double BoostedClassifier::response(const DataInstance * data_instance) const 
+double BoostedClassifier::response(const DataInstance & data_instance) const 
 {
 	double resp = 0.0;
 
@@ -154,7 +150,7 @@ double BoostedClassifier::response(const DataInstance * data_instance) const
 }
 
 
-int BoostedClassifier::classify(const DataInstance * data_instance) const
+int BoostedClassifier::classify(const DataInstance & data_instance) const
 {
 	double resp = response(data_instance);
 	return ((resp <= decision_threshold) ? -1 : 1);

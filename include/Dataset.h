@@ -17,33 +17,65 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
 #include <set>
 #include <vector>
-#include <DataInstance.h>
 
 #ifndef DATASET
 #define DATASET
 
 using namespace std;
 
+class DataInstance {
+
+public:
+
+	DataInstance(int dimension) : data(dimension)
+	{
+
+	}
+
+	double operator [](size_t feature_index) const
+	{
+		return data[feature_index];
+	}
+
+protected:
+	vector<double> data;
+};
+
 
 class Dataset {
 	
 public:	
 	
-	virtual size_t size() const =0;
-	virtual const DataInstance * getDataInstanceAt(unsigned int pos) const =0;
-	virtual void removeDataInstanceAt(unsigned int pos) = 0;
-	virtual void clear() = 0;
+	size_t size() const
+	{
+		return data.size();
+	}
 	
+	const DataInstance & operator [](unsigned int sample_index) const 
+	{
+		return data[sample_index];
+	}
+
+	void add(DataInstance & sample, int label)
+	{
+		data.push_back(sample);
+		labels.push_back(label);
+	}
+
+	int getLabelAt(size_t sample_index) const
+	{
+		return labels[sample_index];
+	}
+
+
 protected:
 	
-	vector< const DataInstance * > data;
-	
-};
+	vector< const DataInstance > data;
+	vector< int > labels;
 
+};
 
 #endif
 

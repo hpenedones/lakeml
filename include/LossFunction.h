@@ -17,33 +17,30 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-#include <LabeledDataset.h>
+#include <Dataset.h>
 #include <vector>
 
 using namespace std;
-
 
 class LossFunction
 {
 public:
 	
 	// computes the value of the loss function for a given dataset and responses of a classifier on those samples
-	void value( const LabeledDataset * dataset,
+	void value( const Dataset & dataset,
 	 			const vector<double> & data_weights,
 				const vector<double> & responses,
 				vector<double> & out_loss) const;
 	
 	// computes the gradient of the loss function (which is a vector with one dimension per sample in the dataset)  
-	void gradient( const LabeledDataset * dataset,
+	void gradient( const Dataset & dataset,
 				   const vector<double> & data_weights,
 	 			   const vector<double> & responses,
 	 			   vector<double> & out_gradient) const;
 
 	// computes how far one should move along a given direction in order to minimize the loss the most 
 	// it puts its return values in the doubles of the last 2 arguments, for which we have the pointers
-	void optimal_step_along_direction(const LabeledDataset * dataset,
+	void optimal_step_along_direction(const Dataset & dataset,
 		   							  const vector<double> & data_weights,
 	 								  const vector<double> & responses,
 	 								  const vector<int> & direction,

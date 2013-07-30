@@ -25,11 +25,10 @@
 #include <math.h>
 #include <cfloat>
 
-Kmeans::Kmeans(double ** dataset, int nsamples, int dim, int nclusters)
+Kmeans::Kmeans(const Dataset &dataset, int nclusters) : cluster_labels(nclusters), counters(nclusters)
 {
 	assert(nclusters > 0);
-	assert(nsamples > nclusters);
-	assert(dataset != NULL);
+	assert(dataset.size() > nclusters);
 	
 	this->dataset = dataset;
 	this->nsamples = nsamples;
@@ -38,25 +37,12 @@ Kmeans::Kmeans(double ** dataset, int nsamples, int dim, int nclusters)
 	this->iterations = 0;
 	this->prev_error = DBL_MAX;
 	
-	cluster_centers = new double*[nclusters];
 	for(int i = 0; i < nclusters; ++i)
-		cluster_centers[i] = new double[dim];
-
-	cluster_labels = new int[nsamples];
-	counters = new int[nclusters];
-	
+		cluster_centers.push_back( vector<double>(dim));
 }
 
 Kmeans::~Kmeans()
 {
-	
-	for(int i = 0; i < nclusters; ++i)
-		delete[] cluster_centers[i];
-
-	delete[] cluster_centers;
-	delete[] cluster_labels;
-	delete[] counters;
-	
 }
 
 void Kmeans::initialize(){
@@ -109,9 +95,8 @@ void Kmeans::updateAssignments(){
 }
 
 
-int Kmeans::getClosestClusterLabel(double * x)
+int Kmeans::getClosestClusterLabel(const DataInstance & x) const
 {
-	
 	int ind=-1;
 	double min = DBL_MAX, cur_dist;
 	
@@ -125,14 +110,12 @@ int Kmeans::getClosestClusterLabel(double * x)
 			}
 		}
 		
-	assert(ind >= 0);
-		
+	assert(ind >= 0);		
 	return ind;
-	
 }
 
-double Kmeans::l2norm(double * x, double * y){
-	
+double Kmeans::l2norm(const DataInstance & x, const vector<double> & y) const
+{
 	double dist = 0.0;
 	/*
 		\todo make it more numerical stable (avoid overflow while taking the square)
@@ -150,7 +133,6 @@ double Kmeans::computeError(){
 	for(int s=0; s<nsamples; s++)
 	{
 		double dist = l2norm(dataset[s], cluster_centers[cluster_labels[s]]);
-		
 		error += dist;
 	}
 	
@@ -180,18 +162,13 @@ int Kmeans::run(int max_iterations, float min_delta_improv){
 	iterations = 0;
 
 	for ( ; (iterations < max_iterations) && (prev_error - error > min_delta_improv); iterations++)
-	{
-		// std::cout << "kmeans iteration # " << iterations << " current error = " << error << std::endl;
-		
+	{	
 		computeCenters();
-		updateAssignments();
-		
+		updateAssignments();	
 		prev_error = error;
 		error = computeError();
 	}
-	
-	// std::cout << "kmeans iterations = " << iterations << " final error = " << error << std::endl;
-	
+
 	return iterations;
 }
 

@@ -85,8 +85,8 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 	void EM::initialize()
 	{
 
-		Kmeans * kmeans = new Kmeans(dataset, nsamples, dim, ngaussians);
-		kmeans->run(100, 0.1);
+		Kmeans kmeans(dataset, nsamples, dim, ngaussians);
+		kmeans.run(100, 0.1);
 		
 		for(int g = 0; g < ngaussians; ++g)
 		{
@@ -94,15 +94,13 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 			
 			for(int d = 0; d < dim; ++d)
 			{
-				means[g][d] = kmeans->cluster_centers[g][d];
+				means[g][d] = kmeans.cluster_centers[g][d];
 				/*
 					\todo initialize covariances matrices with sample variance from kmeans
 				*/
 				diag_covs[g][d] = 400;
 			}
 		}
-		
-		delete kmeans;
 		
 		//	pre-compute logarithms of square-root of determinants of the covariance-matrices
 		for(int g = 0; g < ngaussians; ++g)

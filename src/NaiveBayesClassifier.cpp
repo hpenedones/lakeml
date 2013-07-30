@@ -24,8 +24,7 @@
 #include <math.h>
 
 NaiveBayesClassifier::NaiveBayesClassifier()
-{
-	
+{	
 }
 
 NaiveBayesClassifier::~NaiveBayesClassifier()
@@ -33,8 +32,7 @@ NaiveBayesClassifier::~NaiveBayesClassifier()
 	for(size_t i = 0; i < weak_learners.size(); i++)
 	{
 		delete weak_learners[i];
-	}
-	
+	}	
 }
 
 
@@ -47,25 +45,23 @@ classifier_factory(classifier_factory_), learners_to_add(num_weak_learners_), de
 	
 	
 	
-void NaiveBayesClassifier::train(const LabeledDataset* training_dataset, vector<double> &weights) 
+void NaiveBayesClassifier::train(const Dataset & training_dataset, vector<double> &weights) 
 {
 	
 	for(int i = 0; i < learners_to_add; i++)
 	{
 		Classifier * next_weak_learner = classifier_factory->createRandomInstance();
-
-		next_weak_learner->train(training_dataset,weights);
-		
+		next_weak_learner->train(training_dataset, weights);
 		weak_learners.push_back(next_weak_learner);
 	}
 
 	vector<double> pos_responses, neg_responses;
 	
-	for(size_t i = 0; i < training_dataset->size(); i++)
+	for(size_t i = 0; i < training_dataset.size(); i++)
 	{
-		double my_resp = response(training_dataset->getDataInstanceAt(i));
+		double my_resp = response(training_dataset[i]);
 		
-		if(training_dataset->getLabelAt(i) == 1)
+		if(training_dataset.getLabelAt(i) == 1)
 			pos_responses.push_back(my_resp);
 		else
 			neg_responses.push_back(my_resp);
@@ -81,10 +77,6 @@ void NaiveBayesClassifier::train(const LabeledDataset* training_dataset, vector<
 		\fixme this is an arbitrary choice
 	*/
 	decision_threshold = *min_element(pos_responses.begin(), pos_responses.end());
-	
-	cout  << " pos_mean = " << pos_mean << " pos_var = " << pos_var << " decision_threshold = " << decision_threshold << endl;
-	cout  << " neg_mean = " << neg_mean << " neg_var = " << neg_var <<  endl;
-
 
 	int true_negatives = 0, false_positives = 0;
 	
@@ -95,12 +87,9 @@ void NaiveBayesClassifier::train(const LabeledDataset* training_dataset, vector<
 		else
 			true_negatives++;
 	}
-
-	cout  << " false_positives = " << false_positives << " true_negatives = " << true_negatives << " rate = " << 1.0*false_positives/neg_responses.size() << endl;
-
 }
 
-double NaiveBayesClassifier::response(const DataInstance * data_instance) const 
+double NaiveBayesClassifier::response(const DataInstance & data_instance) const 
 {
 	double resp = 0.0;
 	int valid_responses = 0;
@@ -121,7 +110,7 @@ double NaiveBayesClassifier::response(const DataInstance * data_instance) const
 	return resp/valid_responses;
 }
 
-int NaiveBayesClassifier::classify(const DataInstance * data_instance) const 
+int NaiveBayesClassifier::classify(const DataInstance & data_instance) const 
 {
 	double resp = response(data_instance);
 

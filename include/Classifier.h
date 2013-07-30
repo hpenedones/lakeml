@@ -19,8 +19,7 @@
 
 #include <cassert>
 #include <vector>
-#include <iostream>
-#include <LabeledDataset.h>
+#include <Dataset.h>
 
 #ifndef CLASSIFIER
 #define CLASSIFIER
@@ -33,15 +32,30 @@ public:
 //	Classifier();
 //	virtual ~Classifier() = 0;
 		
-	virtual void   train(const LabeledDataset* training_dataset, vector<double> &weights) = 0;
-	virtual double response(const DataInstance * data_instance) const = 0;
-	virtual int	   classify(const DataInstance * data_instance) const = 0;
+	virtual void   train(const Dataset & training_dataset, vector<double> &weights) = 0;
+	virtual double response(const DataInstance & data_instance) const = 0;
+	virtual int	   classify(const DataInstance &  data_instance) const = 0;
 	
-	vector<double> responses(const Dataset* dataset) const;
-	vector<int>	   classifications(const Dataset* dataset) const;
-	
-	double classificationError(const LabeledDataset * dataset) const;
-	double classificationError(const LabeledDataset * dataset, vector<double> &weights) const;
+	vector<double> Classifier::response(const Dataset & dataset) const{
+
+		vector<double> resp;
+
+		for (unsigned int i = 0; i < dataset.size(); i++)
+			resp.push_back(response(dataset[i]));
+
+		return resp;
+	}
+
+	vector<int> Classifier::classify(const Dataset & dataset) const{
+
+		vector<int> classes;
+
+		for (unsigned int i = 0; i < dataset.size(); i++)
+			classes.push_back(classify(dataset[i]));
+
+		return classes;
+	}
+
 		
 };
 

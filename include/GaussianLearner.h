@@ -21,7 +21,7 @@
 #include <Classifier.h>
 #include <math_utils.h>
 #include <math.h>
-#include <FeatureExtractor.h>
+#include <Dataset.h>
 
 #ifndef GAUSSIANLEARNER_H_
 #define GAUSSIANLEARNER_H_
@@ -31,21 +31,21 @@ class GaussianLearner: public Classifier
 
 public:
 	
-	GaussianLearner ();
-	GaussianLearner (FeatureExtractor * feature_extractor);
-	~GaussianLearner ();
+	GaussianLearner();
+	GaussianLearner(unsigned int feature_index);
+	~GaussianLearner();
 	
-	void train(const LabeledDataset * training_dataset, vector<double> &data_weights);
-	double response(const DataInstance * data_instance) const;
-	int	   classify(const DataInstance * data_instance) const;
+	void train(const Dataset & training_dataset, vector<double> &data_weights);
+	double response(const DataInstance & data_instance) const;
+	int	   classify(const DataInstance & data_instance) const;
 
 private:
-	
+
+	unsigned int feature_index;
+
 	double log_probability_pos_class(double val) const; 
 	double log_probability_neg_class(double val) const; 
 	
-	FeatureExtractor * feature_extractor;
-
 	double pos_class_mean, pos_class_var;
 	double neg_class_mean, neg_class_var;
 	
