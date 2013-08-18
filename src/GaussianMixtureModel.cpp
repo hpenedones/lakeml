@@ -19,96 +19,83 @@
 
 #define _USE_MATH_DEFINES
 
-#include <EM.h>
+#include <GaussianMixtureModel.h>
 #include <cmath>
 #include <float.h>
 #include <iostream>
 #include <math_utils.h>
 #include <cassert>
-#include <kmeans.h>
-
+#include <Kmeans.h>
+#include <algorithm>
 using namespace std;
 
 
+GaussianMixtureModel::GaussianMixtureModel(int ngauss, int max_iter)
+{
+	ngaussians = ngauss;
+	max_iterations = max_iter;
+}
+
 	
-EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_improv)
+void GaussianMixtureModel::initialize(int dim, int nsamples)
 	{
-		iterations = 0;
-		max_iterations = max_iter;
-		dataset = data;
-		ngaussians = ngauss;
-		dim = d;
-		nsamples = ns;
+
 		pi_const = 0.5*dim*log(M_PI);
-		
-		means     = new double* [ngaussians];
-		for(int i=0; i<ngaussians; i++) means[i] = new double[dim];
-		
-		diag_covs = new double* [ngaussians];
-		for(int i=0; i<ngaussians; i++) diag_covs[i] = new double[dim];
-		
-		weights   = new double[ngaussians];
-			
-		resps	  = new double* [nsamples];
-		for(int i=0; i<nsamples; i++) resps[i] = new double[ngaussians];	
+		iterations = 0;
 
+		means.reserve(ngaussians);
+		for (int i = 0; i < ngaussians; i++)
+			means[i].reserve(dim);
 
-		temp	  = new double* [nsamples];
-		for(int i=0; i<nsamples; i++) temp[i] = new double[ngaussians];	
+		diag_covs.reserve(ngaussians);
+		for (int i = 0; i < ngaussians; i++)
+			diag_covs[i].reserve(dim);
 
-		log_sqrt_determinants = new double[ngaussians];
-		tmp_exponents = new double[ngaussians];
-		mass      = new double[ngaussians];
-		
-		// data   has size (nsamples * dim);
+		weights.reserve(ngaussians);
+
+		resps.reserve(nsamples);
+		for (int i = 0; i < nsamples; i++)
+			resps[i].reserve(ngaussians);
+
+		temp.reserve(nsamples);
+		for (int i = 0; i < nsamples; i++)
+			temp[i].reserve(ngaussians);
+
+		log_sqrt_determinants.reserve(ngaussians);
+		mass.reserve(ngaussians);		
 	}
-	
-	EM::~EM()
-	{
-		for(int i=0; i<ngaussians; i++) delete[] means[i];
-		delete[] means;
-		
-		for(int i=0; i<ngaussians; i++) delete[] diag_covs[i];
-		delete[] diag_covs;
-		
-		for(int i=0; i<nsamples; i++) delete[] resps[i];	
-		delete[] resps;
-		
-		delete[] weights;
-		delete[] tmp_exponents;
-		delete[] log_sqrt_determinants;
-		delete[] mass;
-		
-	}
-	
-	
-	void EM::initialize()
-	{
 
-		Kmeans kmeans(dataset, nsamples, dim, ngaussians);
-		kmeans.run(100, 0.1);
-		
-		for(int g = 0; g < ngaussians; ++g)
+void GaussianMixtureModel::initialize_clusters_with_kmeans(const Dataset & dataset)
+{
+	// data   has size (nsamples * dim);
+
+	Kmeans kmeans(dataset, ngaussians);
+	kmeans.run(100, 0.1);
+
+	for (int g = 0; g < ngaussians; ++g)
+	{
+		weights[g] = 1.0 / ngaussians;
+
+		for (int d = 0; d < dim; ++d)
 		{
-			weights[g] = 1.0/ngaussians;
-			
-			for(int d = 0; d < dim; ++d)
-			{
-				means[g][d] = kmeans.cluster_centers[g][d];
-				/*
-					\todo initialize covariances matrices with sample variance from kmeans
-				*/
-				diag_covs[g][d] = 400;
-			}
+			means[g][d] = kmeans.cluster_centers[g][d];
+			/*
+			\todo initialize covariances matrices with sample variance from kmeans
+			*/
+			diag_covs[g][d] = 400;
 		}
-		
-		//	pre-compute logarithms of square-root of determinants of the covariance-matrices
-		for(int g = 0; g < ngaussians; ++g)
-			log_sqrt_determinants[g] = log_sqrt_determinant(g);
-		
 	}
 
-	double EM::gaussian_exponent(double * x, int gaussian_index)
+	//	pre-compute logarithms of square-root of determinants of the covariance-matrices
+	for (int g = 0; g < ngaussians; ++g)
+		log_sqrt_determinants[g] = log_sqrt_determinant(g);
+}
+
+
+
+
+
+double GaussianMixtureModel::gaussian_exponent(const DataInstance & x, int gaussian_index) const
 	{
 	double exponent = 0.0;
 	
@@ -121,12 +108,12 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 	return exponent;
 	}
 	
-	double EM::exponent_form(double *x, int g)
+double GaussianMixtureModel::exponent_form(const DataInstance & x, int g) const
 	{
 		return -0.5*gaussian_exponent(x, g) + log(weights[g]) - log_sqrt_determinants[g] -  pi_const;
 	}
 
-	double EM::log_sqrt_determinant(int gaussian_index)
+double GaussianMixtureModel::log_sqrt_determinant(int gaussian_index) const
 	{
 		double log_sqrt_det = 0.0;
 		
@@ -136,30 +123,27 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 		return log_sqrt_det;
 	}
 
-	//
-	double EM::sample_log_likelihood(double *sample)
+
+double GaussianMixtureModel::response(const DataInstance & sample) const
+{
+	return sample_log_likelihood(sample);
+}
+
+double GaussianMixtureModel::sample_log_likelihood(const DataInstance & sample) const
 	{
+		vector<double> tmp_exponents(ngaussians);
+
 		for(int g = 0; g < ngaussians; ++g)
 			tmp_exponents[g] = exponent_form(sample, g);
 				
-		double max_exponent = max(tmp_exponents, ngaussians);
+		double max_exponent = *std::max_element(tmp_exponents.begin(), tmp_exponents.end());
 		assert(!isnan(max_exponent));
 		
 		double sum_exp = 0.0;
 		for(int g = 0; g < ngaussians; ++g)
 			sum_exp += exp(tmp_exponents[g] - max_exponent);
 		
-		if(isnan(sum_exp))
-		{
-			sum_exp = 0.0;
-			for(int g = 0; g < ngaussians; ++g)
-			{
-				sum_exp += exp(tmp_exponents[g] - max_exponent);
-				
-			 cout <<  	sum_exp << " +=	exp( " << tmp_exponents[g] << " - " << max_exponent << ") = " << exp(tmp_exponents[g] - max_exponent) << endl;
-			}
-		exit(0);
-		}
+		assert(!isnan(sum_exp));
 
 		double log_likelihood = max_exponent + log(sum_exp);  
 	
@@ -169,21 +153,22 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 	}
 	
 	
-	int  EM::classify(double * sample)
+	int  GaussianMixtureModel::classify(const DataInstance & sample) const
 	{
+		vector<double> tmp_exponents(ngaussians);
+
 		for(int g = 0; g < ngaussians; ++g)
 			tmp_exponents[g] = exponent_form(sample, g);
-		return max_ind(tmp_exponents, ngaussians);
+	
+		int max_ind = std::max_element(tmp_exponents.begin(), tmp_exponents.end()) - tmp_exponents.begin();
+		return max_ind;
 	}
 	
-	double EM::dataset_log_likelihood(double **data, int rows)
+	double GaussianMixtureModel::datasetLogLikelihood(const Dataset &data) const
 	{
-		//	pre-compute logarithms of square-root of determinants of the covariance-matrices
-		for(int g = 0; g < ngaussians; ++g)
-			log_sqrt_determinants[g] = log_sqrt_determinant(g);
 			
 		double acc = 0.0;
-		for(int i = 0; i < rows; ++i)
+		for(int i = 0; i < data.size(); ++i)
 		{
 			acc += sample_log_likelihood(data[i]);
 		}
@@ -191,29 +176,28 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 	}
 
 
-	int EM::optimal_num_gaussians(double ** training, double ** validation,
-	   								 int dim, int ntrainsamples , int nvalsamples, int lim_inf, int lim_sup)
+	int GaussianMixtureModel::optimalNumOfGaussians(const Dataset & training, const Dataset & validation,
+	   								  int lim_inf, int lim_sup) const
 	{
 		double best_log_likelihood = -DBL_MAX;
 		int optim_N = 0;
 
 		for(int i = lim_inf; i <= lim_sup; ++i)
 		{
-			EM * em_model = new EM ( training, ntrainsamples, dim, i, 100, 0.1);
+			GaussianMixtureModel gmm(i, 100);
 
-			em_model->run();
+			vector<double> weights(training.size());
+			std::fill(weights.begin(), weights.end(), 1.0);
+			gmm.train(training, weights);
 
-			double log_likelihood = em_model->dataset_log_likelihood(validation, nvalsamples);
-			double train_log_likelihood = em_model->dataset_log_likelihood(training, ntrainsamples);
-
-			cout << i << " " << train_log_likelihood << " " << log_likelihood << endl; 
+			double log_likelihood = gmm.datasetLogLikelihood(validation);
+			double train_log_likelihood = gmm.datasetLogLikelihood(training);
 
 			if ( log_likelihood > best_log_likelihood )
 				{
 					best_log_likelihood = log_likelihood;
 					optim_N = i;
 				}
-			delete em_model;
 		}
 
 		assert(optim_N > 0);
@@ -223,7 +207,7 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 
 
 
-	void EM::m_step()
+	void GaussianMixtureModel::m_step(const Dataset & dataset)
 	{
 		// compute "mass" of each gaussian
 		double total_mass = 0.0;
@@ -279,25 +263,25 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 	    
 	}
 	
-	void EM::e_step()
+	void GaussianMixtureModel::e_step(const Dataset & dataset)
 	{
-
+		vector<double> tmp_exponents(ngaussians);
 		for(int s = 0; s < nsamples; ++s)
 		{	
 			for(int g = 0; g < ngaussians; ++g)
 				tmp_exponents[g] = -0.5*gaussian_exponent(dataset[s], g) + log(weights[g]) - log_sqrt_determinants[g] ;
 			
-			double max_exponent = max(tmp_exponents, ngaussians);
+			double max_exponent = *std::max_element(tmp_exponents.begin(), tmp_exponents.end());
 			
 			for(int g = 0; g < ngaussians; ++g)
 				resps[s][g] = exp(tmp_exponents[g] - max_exponent);
 
-			normalize(resps[s], ngaussians);
+			normalize(resps[s]);
 		}
 
 	}
-	
-	void EM::show_variables()
+	 
+	void GaussianMixtureModel::show_variables()
 	{
 		
 		for(int g = 0; g < ngaussians; ++g)
@@ -313,20 +297,20 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 		
 	}
 	
-	void EM::run()
+	void GaussianMixtureModel::run(const Dataset & dataset)
 	{
 		// C++ style for -DBL_MAX
 		double prev_log_likelihood = - numeric_limits<double>::max();
 		double cur_log_likelihood = - numeric_limits<double>::max();
 	
-		initialize();
+
 		do
 		{
-			e_step();
-			m_step();
+			e_step(dataset);
+			m_step(dataset);
 
 			prev_log_likelihood = cur_log_likelihood;
-			cur_log_likelihood = dataset_log_likelihood(dataset, nsamples);
+			cur_log_likelihood = datasetLogLikelihood(dataset);
 
 		}
 		while( iterations++ < max_iterations && cur_log_likelihood > prev_log_likelihood + 0.01);
@@ -334,5 +318,14 @@ EM::EM( double ** data, int ns, int d, int ngauss, int max_iter, double delta_im
 	}
 
 	
+	void GaussianMixtureModel::train(const Dataset & dataset, const vector<double> & weights)
+	{
+		assert(dataset.size > 0);
+		initialize(dataset[0].size(), dataset.size());
+		initialize_clusters_with_kmeans(dataset);
+
+		run(dataset);
+
+	}
 
 

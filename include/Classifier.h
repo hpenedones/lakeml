@@ -32,7 +32,7 @@ public:
 //	Classifier();
 //	virtual ~Classifier() = 0;
 		
-	virtual void   train(const Dataset & training_dataset, vector<double> &weights) = 0;
+	virtual void   train(const Dataset & training_dataset, const vector<double> &weights) = 0;
 	virtual double response(const DataInstance & data_instance) const = 0;
 	virtual int	   classify(const DataInstance &  data_instance) const = 0;
 	

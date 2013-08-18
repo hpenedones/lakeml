@@ -24,7 +24,7 @@
 
 class Kmeans {
 
-	friend class EM;
+	friend class GaussianMixtureModel;
 
 public:
 

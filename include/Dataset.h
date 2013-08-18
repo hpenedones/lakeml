@@ -39,6 +39,11 @@ public:
 		return data[feature_index];
 	}
 
+	size_t size() const
+	{
+		return data.size();
+	}
+
 protected:
 	vector<double> data;
 };
