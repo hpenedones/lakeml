@@ -18,21 +18,20 @@
 */
 
 
-
 #include <kmeans.h>
 #include <iostream>
 #include <cassert>
 #include <math.h>
 #include <cfloat>
 
-Kmeans::Kmeans(const Dataset &dataset, int nclusters) : cluster_labels(nclusters), counters(nclusters)
+Kmeans::Kmeans(const Dataset &dataset, int nclusters) : cluster_labels(dataset.size()), counters(nclusters)
 {
 	assert(nclusters > 0);
 	assert(dataset.size() > nclusters);
 	
 	this->dataset = dataset;
-	this->nsamples = nsamples;
-	this->dim = dim;
+	this->nsamples = dataset.size();
+	this->dim = dataset[0].size();
 	this->nclusters = nclusters;
 	this->iterations = 0;
 	this->prev_error = DBL_MAX;

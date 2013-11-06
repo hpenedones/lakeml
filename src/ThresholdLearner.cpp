@@ -19,9 +19,9 @@
 
 #include <algorithm>
 #include <float.h>
-#include <math.h>
+#include <cmath>
+#include <math_utils.h>
 #include <ThresholdLearner.h>
-
 
 ThresholdLearner::ThresholdLearner()
 {

@@ -17,6 +17,14 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef BUILDING_THE_DLL
+#define EXPORTED __declspec(dllexport)
+#else
+#define EXPORTED __declspec(dllimport)
+#endif
+
+
+
 #include <set>
 #include <vector>
 
@@ -25,8 +33,9 @@
 
 using namespace std;
 
-class DataInstance {
+#define DataInstance vector<double>
 
+/*
 public:
 
 	DataInstance(int dimension) : data(dimension)
@@ -34,7 +43,7 @@ public:
 
 	}
 
-	double operator [](size_t feature_index) const
+	double operator [](size_t feature_index) const 
 	{
 		return data[feature_index];
 	}
@@ -48,8 +57,9 @@ protected:
 	vector<double> data;
 };
 
+*/
 
-class Dataset {
+class EXPORTED  Dataset {
 	
 public:	
 	

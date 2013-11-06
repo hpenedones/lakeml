@@ -70,7 +70,7 @@ void GaussianMixtureModel::initialize_clusters_with_kmeans(const Dataset & datas
 	// data   has size (nsamples * dim);
 
 	Kmeans kmeans(dataset, ngaussians);
-	kmeans.run(100, 0.1);
+	kmeans.run(100, 0.1f);
 
 	for (int g = 0; g < ngaussians; ++g)
 	{
@@ -137,17 +137,17 @@ double GaussianMixtureModel::sample_log_likelihood(const DataInstance & sample) 
 			tmp_exponents[g] = exponent_form(sample, g);
 				
 		double max_exponent = *std::max_element(tmp_exponents.begin(), tmp_exponents.end());
-		assert(!isnan(max_exponent));
+		assert(isfinite(max_exponent));
 		
 		double sum_exp = 0.0;
 		for(int g = 0; g < ngaussians; ++g)
 			sum_exp += exp(tmp_exponents[g] - max_exponent);
 		
-		assert(!isnan(sum_exp));
+		assert(isfinite(sum_exp));
 
 		double log_likelihood = max_exponent + log(sum_exp);  
 	
-		assert(!isnan(log_likelihood));
+		assert(isfinite(log_likelihood));
 		return log_likelihood;
 		
 	}
@@ -168,7 +168,7 @@ double GaussianMixtureModel::sample_log_likelihood(const DataInstance & sample) 
 	{
 			
 		double acc = 0.0;
-		for(int i = 0; i < data.size(); ++i)
+		for(unsigned int i = 0; i < data.size(); ++i)
 		{
 			acc += sample_log_likelihood(data[i]);
 		}
@@ -320,7 +320,7 @@ double GaussianMixtureModel::sample_log_likelihood(const DataInstance & sample) 
 	
 	void GaussianMixtureModel::train(const Dataset & dataset, const vector<double> & weights)
 	{
-		assert(dataset.size > 0);
+		assert(dataset.size() > 0);
 		initialize(dataset[0].size(), dataset.size());
 		initialize_clusters_with_kmeans(dataset);
 

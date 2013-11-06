@@ -32,7 +32,7 @@ void LossFunction::value( const Dataset & dataset,
 			vector<double> & out_loss) const
 {
 	assert(out_loss.size() == responses.size());
-	assert(data_weights.size() == dataset->size());
+	assert(data_weights.size() == dataset.size());
 	assert(data_weights.size() == responses.size());
 
 	for(size_t i = 0; i < dataset.size(); i++)
@@ -49,7 +49,7 @@ void LossFunction::gradient( const Dataset & dataset,
  			   vector<double> & out_gradient) const
 {
 	assert(out_gradient.size() == responses.size());
-	assert(data_weights.size() == dataset->size());
+	assert(data_weights.size() == dataset.size());
 	assert(data_weights.size() == responses.size());
 	
 	for(size_t i = 0; i < dataset.size(); i++)
@@ -69,7 +69,7 @@ void LossFunction::optimal_step_along_direction(const Dataset & dataset,
 								  double * out_minimum_loss) const
 {
 	assert(direction.size() == responses.size());
-	assert(data_weights.size() == dataset->size());
+	assert(data_weights.size() == dataset.size());
 	assert(data_weights.size() == responses.size());
 	
 	

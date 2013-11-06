@@ -18,12 +18,11 @@ double sum(vector<double> &v)
 
 void normalize(vector<double> &v)
 {
-	int s = sum(v);
-	for each (auto i in v)
+	double s = sum(v);
+	for (unsigned int i = 0; i < v.size(); i++)
 	{
-		i /= s;
+		v[i] /= s;
 	}
-
 }
 
 

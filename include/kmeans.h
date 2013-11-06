@@ -22,7 +22,7 @@
 #ifndef KMEANS_H_
 #define KMEANS_H_
 
-class Kmeans {
+class EXPORTED  Kmeans {
 
 	friend class GaussianMixtureModel;
 

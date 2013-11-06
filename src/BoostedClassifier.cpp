@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <float.h>
+#include <math_utils.h>
 #include <BoostedClassifier.h>
 #include <iostream>
 #include <fstream>
@@ -56,7 +57,7 @@ void BoostedClassifier::train(const Dataset & training_dataset, vector<double> &
 		assert(training_dataset.size() > 0);
 		assert(learners_to_add > 0);
 		assert(trials_per_learner > 0);
-		assert(initial_data_weights.size() == training_dataset->size());
+		assert(initial_data_weights.size() == training_dataset.size());
 	}
 
 	// initialize vectors with the size of the dataset
