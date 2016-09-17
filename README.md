@@ -10,4 +10,6 @@ The source code can be built using Bazel:
 
 ### Building
 
+bazel build :lakeml-lib
+
 bazel run :demo
