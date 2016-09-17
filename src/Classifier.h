@@ -30,32 +30,32 @@ class Classifier
 
 public:
 
-//	Classifier();
-//	virtual ~Classifier() = 0;
+//  Classifier();
+//  virtual ~Classifier() = 0;
 
-	virtual void   train(const Dataset & training_dataset, const vector<double> &weights) = 0;
-	virtual double response(const DataInstance & data_instance) const = 0;
-	virtual int	   classify(const DataInstance &  data_instance) const = 0;
+    virtual void   train(const Dataset & training_dataset, const vector<double> &weights) = 0;
+    virtual double response(const DataInstance & data_instance) const = 0;
+    virtual int    classify(const DataInstance &  data_instance) const = 0;
 
-	vector<double> response(const Dataset & dataset) const {
+    vector<double> response(const Dataset & dataset) const {
 
-		vector<double> resp;
+        vector<double> resp;
 
-		for (unsigned int i = 0; i < dataset.size(); i++)
-			resp.push_back(response(dataset[i]));
+        for (unsigned int i = 0; i < dataset.size(); i++)
+            resp.push_back(response(dataset[i]));
 
-		return resp;
-	}
+        return resp;
+    }
 
-	vector<int> classify(const Dataset & dataset) const {
+    vector<int> classify(const Dataset & dataset) const {
 
-		vector<int> classes;
+        vector<int> classes;
 
-		for (unsigned int i = 0; i < dataset.size(); i++)
-			classes.push_back(classify(dataset[i]));
+        for (unsigned int i = 0; i < dataset.size(); i++)
+            classes.push_back(classify(dataset[i]));
 
-		return classes;
-	}
+        return classes;
+    }
 };
 
 #endif

@@ -7,9 +7,9 @@ using namespace std;
 
 // template<typename T> bool isfinite(T arg)
 // {
-// 	return arg == arg &&
-// 	       arg != std::numeric_limits<T>::infinity() &&
-// 	       arg != -std::numeric_limits<T>::infinity();
+//  return arg == arg &&
+//         arg != std::numeric_limits<T>::infinity() &&
+//         arg != -std::numeric_limits<T>::infinity();
 // };
 
 int sign(double val);

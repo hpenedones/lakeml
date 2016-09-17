@@ -26,19 +26,19 @@
 class ThresholdLearner : public Classifier
 {
 public:
-	ThresholdLearner();
-	ThresholdLearner( unsigned int feature_index);
+    ThresholdLearner();
+    ThresholdLearner( unsigned int feature_index);
 
-	// inherited from Classifier
-	void train(const Dataset & training_dataset, const vector<double> &data_weights);
-	double response(const DataInstance & data_instance) const;
-	int	   classify(const DataInstance & data_instance) const;
+    // inherited from Classifier
+    void train(const Dataset & training_dataset, const vector<double> &data_weights);
+    double response(const DataInstance & data_instance) const;
+    int    classify(const DataInstance & data_instance) const;
 
 private:
 
-	unsigned int feature_index;
-	double optimal_threshold;
-	int label_on_left;
+    unsigned int feature_index;
+    double optimal_threshold;
+    int label_on_left;
 
 };
 

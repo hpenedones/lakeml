@@ -32,14 +32,14 @@ void LossFunction::value( const Dataset & dataset,
                           const vector<double> & responses,
                           vector<double> & out_loss) const
 {
-	assert(out_loss.size() == responses.size());
-	assert(data_weights.size() == dataset.size());
-	assert(data_weights.size() == responses.size());
+    assert(out_loss.size() == responses.size());
+    assert(data_weights.size() == dataset.size());
+    assert(data_weights.size() == responses.size());
 
-	for (size_t i = 0; i < dataset.size(); i++)
-	{
-		out_loss[i] = data_weights[i] * exp(-dataset.getLabelAt(i) * responses[i]);
-	}
+    for (size_t i = 0; i < dataset.size(); i++)
+    {
+        out_loss[i] = data_weights[i] * exp(-dataset.getLabelAt(i) * responses[i]);
+    }
 
 }
 
@@ -49,14 +49,14 @@ void LossFunction::gradient( const Dataset & dataset,
                              const vector<double> & responses,
                              vector<double> & out_gradient) const
 {
-	assert(out_gradient.size() == responses.size());
-	assert(data_weights.size() == dataset.size());
-	assert(data_weights.size() == responses.size());
+    assert(out_gradient.size() == responses.size());
+    assert(data_weights.size() == dataset.size());
+    assert(data_weights.size() == responses.size());
 
-	for (size_t i = 0; i < dataset.size(); i++)
-	{
-		out_gradient[i] = data_weights[i] * -dataset.getLabelAt(i) * exp(-dataset.getLabelAt(i) * responses[i]);
-	}
+    for (size_t i = 0; i < dataset.size(); i++)
+    {
+        out_gradient[i] = data_weights[i] * -dataset.getLabelAt(i) * exp(-dataset.getLabelAt(i) * responses[i]);
+    }
 
 }
 
@@ -69,34 +69,34 @@ void LossFunction::optimal_step_along_direction(const Dataset & dataset,
         double * out_optimal_step,
         double * out_minimum_loss) const
 {
-	assert(direction.size() == responses.size());
-	assert(data_weights.size() == dataset.size());
-	assert(data_weights.size() == responses.size());
+    assert(direction.size() == responses.size());
+    assert(data_weights.size() == dataset.size());
+    assert(data_weights.size() == responses.size());
 
 
-	double W_0 = 0.0, W_minus = 0.0, W_plus = 0.0;
+    double W_0 = 0.0, W_minus = 0.0, W_plus = 0.0;
 
-	for (size_t i = 0; i < dataset.size(); i++)
-	{
-		double val = data_weights[i] * exp(-dataset.getLabelAt(i) * responses[i]);
+    for (size_t i = 0; i < dataset.size(); i++)
+    {
+        double val = data_weights[i] * exp(-dataset.getLabelAt(i) * responses[i]);
 
-		switch ( direction[i]*dataset.getLabelAt(i))
-		{
-		case 0:
-			W_0 += val;
-			break;
-		case -1:
-			W_minus += val;
-			break;
-		case 1:
-			W_plus += val;
-			break;
-		default:
-			abort();
+        switch ( direction[i]*dataset.getLabelAt(i))
+        {
+        case 0:
+            W_0 += val;
+            break;
+        case -1:
+            W_minus += val;
+            break;
+        case 1:
+            W_plus += val;
+            break;
+        default:
+            abort();
 
-		}
-	}
+        }
+    }
 
-	*out_minimum_loss = W_0 + 2 * sqrt(W_minus * W_plus);
-	*out_optimal_step = 0.5 * log(W_plus / W_minus);  		// the same as log(sqrt(W_plus/W_minus))
+    *out_minimum_loss = W_0 + 2 * sqrt(W_minus * W_plus);
+    *out_optimal_step = 0.5 * log(W_plus / W_minus);        // the same as log(sqrt(W_plus/W_minus))
 }

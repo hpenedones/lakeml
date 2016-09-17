@@ -25,7 +25,7 @@
 class ClassifierFactory {
 
 public:
-	virtual Classifier * createRandomInstance() const = 0;
+    virtual Classifier * createRandomInstance() const = 0;
 
 };
 

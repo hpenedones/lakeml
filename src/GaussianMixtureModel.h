@@ -27,48 +27,48 @@
 class GaussianMixtureModel: public Classifier
 {
 public:
-	GaussianMixtureModel(int nGaussians, int maxIterations);
-	void train(const Dataset & dataset, const vector<double> & weights);
-	int  classify(const DataInstance & sample) const;
-	double response(const DataInstance & sample) const;
+    GaussianMixtureModel(int nGaussians, int maxIterations);
+    void train(const Dataset & dataset, const vector<double> & weights);
+    int  classify(const DataInstance & sample) const;
+    double response(const DataInstance & sample) const;
 
 
 private:
 
-	//data
-	vector< vector<double> > means;
-	vector< vector<double> > diag_covs;
+    //data
+    vector< vector<double> > means;
+    vector< vector<double> > diag_covs;
 
-	vector< vector<double> > resps, temp;
-	vector<double> weights, mass, log_sqrt_determinants;
+    vector< vector<double> > resps, temp;
+    vector<double> weights, mass, log_sqrt_determinants;
 
-	int ngaussians, iterations, max_iterations, dim, nsamples;
-	double pi_const;
+    int ngaussians, iterations, max_iterations, dim, nsamples;
+    double pi_const;
 
-	//methods
+    //methods
 
-	void run(const Dataset & dataset);
+    void run(const Dataset & dataset);
 
-	void initialize(int dimension, int nsamples);
-	void initialize_clusters_with_kmeans(const Dataset & dataset);
+    void initialize(int dimension, int nsamples);
+    void initialize_clusters_with_kmeans(const Dataset & dataset);
 
-	void m_step(const Dataset & dataset);
+    void m_step(const Dataset & dataset);
 
-	void e_step(const Dataset & dataset);
+    void e_step(const Dataset & dataset);
 
-	void show_variables();
+    void show_variables();
 
-	int optimalNumOfGaussians(const Dataset & training, const Dataset & validation, int lim_inf, int lim_sup) const;
+    int optimalNumOfGaussians(const Dataset & training, const Dataset & validation, int lim_inf, int lim_sup) const;
 
-	double gaussian_exponent(const DataInstance & x, int gaussian_index) const;
+    double gaussian_exponent(const DataInstance & x, int gaussian_index) const;
 
-	double exponent_form(const DataInstance & x, int g) const;
+    double exponent_form(const DataInstance & x, int g) const;
 
-	double log_sqrt_determinant(int gaussian_index) const;
+    double log_sqrt_determinant(int gaussian_index) const;
 
-	double sample_log_likelihood(const DataInstance & sample) const;
+    double sample_log_likelihood(const DataInstance & sample) const;
 
-	double datasetLogLikelihood(const Dataset &dataset) const;
+    double datasetLogLikelihood(const Dataset &dataset) const;
 
 };
 

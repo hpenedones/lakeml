@@ -27,18 +27,18 @@
 
 Kmeans::Kmeans(const Dataset &dataset, int nclusters) : cluster_labels(dataset.size()), counters(nclusters)
 {
-	assert(nclusters > 0);
-	assert(dataset.size() > nclusters);
+    assert(nclusters > 0);
+    assert(dataset.size() > nclusters);
 
-	this->dataset = dataset;
-	this->nsamples = dataset.size();
-	this->dim = dataset[0].size();
-	this->nclusters = nclusters;
-	this->iterations = 0;
-	this->prev_error = DBL_MAX;
+    this->dataset = dataset;
+    this->nsamples = dataset.size();
+    this->dim = dataset[0].size();
+    this->nclusters = nclusters;
+    this->iterations = 0;
+    this->prev_error = DBL_MAX;
 
-	for (int i = 0; i < nclusters; ++i)
-		cluster_centers.push_back( vector<double>(dim));
+    for (int i = 0; i < nclusters; ++i)
+        cluster_centers.push_back( vector<double>(dim));
 }
 
 Kmeans::~Kmeans()
@@ -47,127 +47,127 @@ Kmeans::~Kmeans()
 
 void Kmeans::initialize() {
 
-	/* initialize random seed: */
-	//	srand ( time(NULL) );
-	int samples_per_cluster = nsamples / nclusters;
+    /* initialize random seed: */
+    //  srand ( time(NULL) );
+    int samples_per_cluster = nsamples / nclusters;
 
-	for (int s = 0; s < nsamples; s++)
-	{
-		cluster_labels[s] = s / samples_per_cluster;
-		if (cluster_labels[s] > nclusters - 1)
-			cluster_labels[s] = nclusters - 1;
-	}
-	// shuffle
-	for (int s = 0; s < nsamples; s++)
-	{
-		int new_pos = rand() % nsamples;
-		int tmp = cluster_labels[s];
-		cluster_labels[s] = cluster_labels[new_pos];
-		cluster_labels[new_pos] = tmp;
-	}
-	computeCenters();
+    for (int s = 0; s < nsamples; s++)
+    {
+        cluster_labels[s] = s / samples_per_cluster;
+        if (cluster_labels[s] > nclusters - 1)
+            cluster_labels[s] = nclusters - 1;
+    }
+    // shuffle
+    for (int s = 0; s < nsamples; s++)
+    {
+        int new_pos = rand() % nsamples;
+        int tmp = cluster_labels[s];
+        cluster_labels[s] = cluster_labels[new_pos];
+        cluster_labels[new_pos] = tmp;
+    }
+    computeCenters();
 }
 
 
 void Kmeans::computeCenters() {
 
-	for (int i = 0; i < nclusters; i++)
-		counters[i] = 0;
+    for (int i = 0; i < nclusters; i++)
+        counters[i] = 0;
 
-	for (int s = 0; s < nsamples ; s++)
-	{
-		int cl = cluster_labels[s];
-		counters[cl]++;
+    for (int s = 0; s < nsamples ; s++)
+    {
+        int cl = cluster_labels[s];
+        counters[cl]++;
 
-		for (int d = 0; d < dim; d++)
-			cluster_centers[cl][d] = cluster_centers[cl][d] * ((counters[cl] - 1.0) / counters[cl]) + 1.0 * dataset[s][d] / counters[cl];
-	}
+        for (int d = 0; d < dim; d++)
+            cluster_centers[cl][d] = cluster_centers[cl][d] * ((counters[cl] - 1.0) / counters[cl]) + 1.0 * dataset[s][d] / counters[cl];
+    }
 }
 
 void Kmeans::updateAssignments() {
 
-	for (int s = 0; s < nsamples ; s++) {
-		cluster_labels[s] = getClosestClusterLabel(dataset[s]);
-	}
+    for (int s = 0; s < nsamples ; s++) {
+        cluster_labels[s] = getClosestClusterLabel(dataset[s]);
+    }
 
 }
 
 
 int Kmeans::getClosestClusterLabel(const DataInstance & x) const
 {
-	int ind = -1;
-	double min = DBL_MAX, cur_dist;
+    int ind = -1;
+    double min = DBL_MAX, cur_dist;
 
-	for (int i = 0; i < nclusters; i++)
-	{
-		cur_dist = l2norm(x, cluster_centers[i]);
+    for (int i = 0; i < nclusters; i++)
+    {
+        cur_dist = l2norm(x, cluster_centers[i]);
 
-		if (cur_dist < min) {
-			min = cur_dist;
-			ind = i;
-		}
-	}
+        if (cur_dist < min) {
+            min = cur_dist;
+            ind = i;
+        }
+    }
 
-	assert(ind >= 0);
-	return ind;
+    assert(ind >= 0);
+    return ind;
 }
 
 double Kmeans::l2norm(const DataInstance & x, const vector<double> & y) const
 {
-	double dist = 0.0;
-	/*
-		\todo make it more numerical stable (avoid overflow while taking the square)
-	*/
-	for (int i = 0; i < dim; ++i)
-		dist += (x[i] - y[i]) * (x[i] - y[i]);
+    double dist = 0.0;
+    /*
+        \todo make it more numerical stable (avoid overflow while taking the square)
+    */
+    for (int i = 0; i < dim; ++i)
+        dist += (x[i] - y[i]) * (x[i] - y[i]);
 
-	return sqrt(dist);
+    return sqrt(dist);
 }
 
 double Kmeans::computeError() {
 
-	double error = 0.0;
+    double error = 0.0;
 
-	for (int s = 0; s < nsamples; s++)
-	{
-		double dist = l2norm(dataset[s], cluster_centers[cluster_labels[s]]);
-		error += dist;
-	}
+    for (int s = 0; s < nsamples; s++)
+    {
+        double dist = l2norm(dataset[s], cluster_centers[cluster_labels[s]]);
+        error += dist;
+    }
 
-	return error;
+    return error;
 }
 
 
 void Kmeans::oneStep()
 {
-	prev_error = (iterations == 0) ? DBL_MAX : error;
-	computeCenters();
-	updateAssignments();
-	error = computeError();
+    prev_error = (iterations == 0) ? DBL_MAX : error;
+    computeCenters();
+    updateAssignments();
+    error = computeError();
 
-	iterations++;
+    iterations++;
 }
 
 
 
 int Kmeans::run(int max_iterations, float min_delta_improv) {
 
-	initialize();
+    initialize();
 
-	prev_error = DBL_MAX;
-	error = computeError();
+    prev_error = DBL_MAX;
+    error = computeError();
 
-	iterations = 0;
+    iterations = 0;
 
-	for ( ; (iterations < max_iterations) && (prev_error - error > min_delta_improv); iterations++)
-	{
-		computeCenters();
-		updateAssignments();
-		prev_error = error;
-		error = computeError();
-	}
+    for ( ; (iterations < max_iterations) && (prev_error - error > min_delta_improv); iterations++)
+    {
+        computeCenters();
+        updateAssignments();
+        prev_error = error;
+        error = computeError();
+    }
 
-	return iterations;
+    return iterations;
 }
 
 

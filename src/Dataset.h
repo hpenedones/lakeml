@@ -28,60 +28,36 @@ using namespace std;
 
 #define DataInstance vector<double>
 
-// class DataInstance {
-// public:
-
-// 	DataInstance(int dimension) : data(dimension)
-// 	{
-
-// 	}
-
-// 	double operator [](size_t feature_index) const 
-// 	{
-// 		return data[feature_index];
-// 	}
-
-// 	size_t size() const
-// 	{
-// 		return data.size();
-// 	}
-
-// protected:
-// 	vector<double> data;
-// };
-
-
-
 class Dataset {
-	
-public:	
-	
-	size_t size() const
-	{
-		return data.size();
-	}
-	
+    
+public: 
+    
+    size_t size() const
+    {
+        return data.size();
+    }
+    
     const DataInstance & operator [](unsigned int sample_index) const
-	{
-		return data[sample_index];
-	}
+    {
+        return data[sample_index];
+    }
 
-	void add(DataInstance & sample, int label)
-	{
-		data.push_back(sample);
-		labels.push_back(label);
-	}
+    void add(DataInstance & sample, int label)
+    {
+        data.push_back(sample);
+        labels.push_back(label);
+    }
 
-	int getLabelAt(size_t sample_index) const
-	{
-		return labels[sample_index];
-	}
+    int getLabelAt(size_t sample_index) const
+    {
+        return labels[sample_index];
+    }
 
 
 protected:
-	
-	vector< DataInstance > data;
-	vector< int > labels;
+    
+    vector< DataInstance > data;
+    vector< int > labels;
 
 };
 

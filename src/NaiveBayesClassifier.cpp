@@ -30,15 +30,15 @@ NaiveBayesClassifier::NaiveBayesClassifier()
 
 NaiveBayesClassifier::~NaiveBayesClassifier()
 {
-	for (size_t i = 0; i < weak_learners.size(); i++)
-	{
-		delete weak_learners[i];
-	}
+    for (size_t i = 0; i < weak_learners.size(); i++)
+    {
+        delete weak_learners[i];
+    }
 }
 
 
 NaiveBayesClassifier::NaiveBayesClassifier(const ClassifierFactory* classifier_factory_, int num_weak_learners_):
-	classifier_factory(classifier_factory_), learners_to_add(num_weak_learners_), decision_threshold(0.0)
+    classifier_factory(classifier_factory_), learners_to_add(num_weak_learners_), decision_threshold(0.0)
 {
 
 }
@@ -47,76 +47,76 @@ NaiveBayesClassifier::NaiveBayesClassifier(const ClassifierFactory* classifier_f
 void NaiveBayesClassifier::train(const Dataset & training_dataset, const vector<double> &weights)
 {
 
-	for (int i = 0; i < learners_to_add; i++)
-	{
-		Classifier * next_weak_learner = classifier_factory->createRandomInstance();
-		next_weak_learner->train(training_dataset, weights);
-		weak_learners.push_back(next_weak_learner);
-	}
+    for (int i = 0; i < learners_to_add; i++)
+    {
+        Classifier * next_weak_learner = classifier_factory->createRandomInstance();
+        next_weak_learner->train(training_dataset, weights);
+        weak_learners.push_back(next_weak_learner);
+    }
 
-	vector<double> pos_responses, neg_responses;
+    vector<double> pos_responses, neg_responses;
 
-	for (size_t i = 0; i < training_dataset.size(); i++)
-	{
-		double my_resp = response(training_dataset[i]);
+    for (size_t i = 0; i < training_dataset.size(); i++)
+    {
+        double my_resp = response(training_dataset[i]);
 
-		if (training_dataset.getLabelAt(i) == 1)
-			pos_responses.push_back(my_resp);
-		else
-			neg_responses.push_back(my_resp);
-	}
+        if (training_dataset.getLabelAt(i) == 1)
+            pos_responses.push_back(my_resp);
+        else
+            neg_responses.push_back(my_resp);
+    }
 
-	double pos_mean = mean(pos_responses, weights);
-	double pos_var  = variance(pos_responses, weights, pos_mean);
+    double pos_mean = mean(pos_responses, weights);
+    double pos_var  = variance(pos_responses, weights, pos_mean);
 
-	double neg_mean = mean(neg_responses, weights);
-	double neg_var  = variance(neg_responses, weights, neg_mean);
+    double neg_mean = mean(neg_responses, weights);
+    double neg_var  = variance(neg_responses, weights, neg_mean);
 
-	/*
-		\fixme this is an arbitrary choice
-	*/
-	decision_threshold = *min_element(pos_responses.begin(), pos_responses.end());
+    /*
+        \fixme this is an arbitrary choice
+    */
+    decision_threshold = *min_element(pos_responses.begin(), pos_responses.end());
 
-	int true_negatives = 0, false_positives = 0;
+    int true_negatives = 0, false_positives = 0;
 
-	for (size_t i = 0; i < neg_responses.size(); i++)
-	{
-		if ( neg_responses[i] > decision_threshold)
-			false_positives++;
-		else
-			true_negatives++;
-	}
+    for (size_t i = 0; i < neg_responses.size(); i++)
+    {
+        if ( neg_responses[i] > decision_threshold)
+            false_positives++;
+        else
+            true_negatives++;
+    }
 }
 
 double NaiveBayesClassifier::response(const DataInstance & data_instance) const
 {
-	double resp = 0.0;
-	int valid_responses = 0;
-	/*
-		\todo Here we are assuming that the responses of the weak learners are: log(p(x| y=1)) - log(p(x|y=0))
-	*/
-	for (size_t i = 0; i < weak_learners.size(); i++)
-	{
-		double fval = weak_learners[i]->response(data_instance);
+    double resp = 0.0;
+    int valid_responses = 0;
+    /*
+        \todo Here we are assuming that the responses of the weak learners are: log(p(x| y=1)) - log(p(x|y=0))
+    */
+    for (size_t i = 0; i < weak_learners.size(); i++)
+    {
+        double fval = weak_learners[i]->response(data_instance);
 
-		if (isfinite(fval))
-		{
-			resp += fval;
-			valid_responses++;
-		}
-	}
+        if (isfinite(fval))
+        {
+            resp += fval;
+            valid_responses++;
+        }
+    }
 
-	return resp / valid_responses;
+    return resp / valid_responses;
 }
 
 int NaiveBayesClassifier::classify(const DataInstance & data_instance) const
 {
-	double resp = response(data_instance);
+    double resp = response(data_instance);
 
-	if (resp > decision_threshold)
-		return 1;
+    if (resp > decision_threshold)
+        return 1;
 
-	return -1;
+    return -1;
 
 }
 

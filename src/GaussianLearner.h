@@ -31,25 +31,25 @@ class GaussianLearner: public Classifier
 
 public:
 
-	GaussianLearner();
-	GaussianLearner(unsigned int feature_index);
-	~GaussianLearner();
+    GaussianLearner();
+    GaussianLearner(unsigned int feature_index);
+    ~GaussianLearner();
 
-	void train(const Dataset & training_dataset, const vector<double> &data_weights);
-	double response(const DataInstance & data_instance) const;
-	int	   classify(const DataInstance & data_instance) const;
+    void train(const Dataset & training_dataset, const vector<double> &data_weights);
+    double response(const DataInstance & data_instance) const;
+    int    classify(const DataInstance & data_instance) const;
 
 private:
 
-	unsigned int feature_index;
+    unsigned int feature_index;
 
-	double log_probability_pos_class(double val) const;
-	double log_probability_neg_class(double val) const;
+    double log_probability_pos_class(double val) const;
+    double log_probability_neg_class(double val) const;
 
-	double pos_class_mean, pos_class_var;
-	double neg_class_mean, neg_class_var;
+    double pos_class_mean, pos_class_var;
+    double neg_class_mean, neg_class_var;
 
-	double log_resp_shift;
+    double log_resp_shift;
 };
 
 

@@ -24,33 +24,33 @@
 
 class  Kmeans {
 
-	friend class GaussianMixtureModel;
+    friend class GaussianMixtureModel;
 
 public:
 
-	Kmeans(const Dataset & dataset, int nclusters);
-	~Kmeans();
+    Kmeans(const Dataset & dataset, int nclusters);
+    ~Kmeans();
 
-	int run(int max_iterations, float min_delta_improv);
-	int getClosestClusterLabel(const DataInstance & x) const;
+    int run(int max_iterations, float min_delta_improv);
+    int getClosestClusterLabel(const DataInstance & x) const;
 
 private:
 
-	void initialize();
-	void computeCenters();
-	void updateAssignments();
-	double computeError();
-	void oneStep();
+    void initialize();
+    void computeCenters();
+    void updateAssignments();
+    double computeError();
+    void oneStep();
 
-	double l2norm(const DataInstance & x, const vector<double> & y) const;
+    double l2norm(const DataInstance & x, const vector<double> & y) const;
 
-	vector<int> cluster_labels, counters;
-	Dataset dataset;
-	vector< vector<double> > cluster_centers;
-	int nclusters;
-	int nsamples, dim;
-	int iterations;
-	double prev_error, error;
+    vector<int> cluster_labels, counters;
+    Dataset dataset;
+    vector< vector<double> > cluster_centers;
+    int nclusters;
+    int nsamples, dim;
+    int iterations;
+    double prev_error, error;
 
 };
 

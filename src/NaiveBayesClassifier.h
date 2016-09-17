@@ -33,23 +33,23 @@ class NaiveBayesClassifier : public Classifier
 {
 
 public:
-	NaiveBayesClassifier ();
-	NaiveBayesClassifier(const ClassifierFactory* classifier_factory, int numweak_learners);
+    NaiveBayesClassifier ();
+    NaiveBayesClassifier(const ClassifierFactory* classifier_factory, int numweak_learners);
 
-	~NaiveBayesClassifier ();
+    ~NaiveBayesClassifier ();
 
-	// declared virtual in Classifier
-	void   train(const Dataset & training_dataset, const vector<double> &weights);
-	double response(const DataInstance & data_instance) const;
-	int	   classify(const DataInstance & data_instance) const;
+    // declared virtual in Classifier
+    void   train(const Dataset & training_dataset, const vector<double> &weights);
+    double response(const DataInstance & data_instance) const;
+    int    classify(const DataInstance & data_instance) const;
 
 private:
 
-	const ClassifierFactory * classifier_factory;
-	int learners_to_add;
+    const ClassifierFactory * classifier_factory;
+    int learners_to_add;
 
-	double decision_threshold;
-	vector<Classifier *> weak_learners;
+    double decision_threshold;
+    vector<Classifier *> weak_learners;
 };
 
 #endif
