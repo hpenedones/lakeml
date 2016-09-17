@@ -27,7 +27,7 @@
 
 #include "GaussianMixtureModel.h"
 #include "math_utils.h"
-#include "kmeans.h"
+#include "Kmeans.h"
 
 using namespace std;
 

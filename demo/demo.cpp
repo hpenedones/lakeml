@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "lakeml/src/Dataset.h"
-#include "lakeml/src/kmeans.h"
+#include "lakeml/src/Kmeans.h"
 
 
 int main(int argc, char **argv) {

@@ -21,7 +21,7 @@
 #include <cassert>
 #include <cfloat>
 
-#include "kmeans.h"
+#include "Kmeans.h"
 #include "math.h"
 
 
