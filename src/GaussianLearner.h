@@ -17,42 +17,41 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <math.h>
+
+#include "Classifier.h"
+#include "math_utils.h"
 #include "Dataset.h"
 
-#ifndef KMEANS_H_
-#define KMEANS_H_
+#ifndef GAUSSIANLEARNER_H_
+#define GAUSSIANLEARNER_H_
 
-class EXPORTED  Kmeans {
-
-	friend class GaussianMixtureModel;
+class GaussianLearner: public Classifier
+{
 
 public:
 
-	Kmeans(const Dataset & dataset, int nclusters);
-	~Kmeans();
+	GaussianLearner();
+	GaussianLearner(unsigned int feature_index);
+	~GaussianLearner();
 
-	int run(int max_iterations, float min_delta_improv);
-	int getClosestClusterLabel(const DataInstance & x) const;
+	void train(const Dataset & training_dataset, const vector<double> &data_weights);
+	double response(const DataInstance & data_instance) const;
+	int	   classify(const DataInstance & data_instance) const;
 
-private:	
+private:
 
-	void initialize();
-	void computeCenters();
-	void updateAssignments();
-	double computeError();
-	void oneStep();
+	unsigned int feature_index;
 
+	double log_probability_pos_class(double val) const;
+	double log_probability_neg_class(double val) const;
 
-	double l2norm(const DataInstance & x, const vector<double> & y) const;
+	double pos_class_mean, pos_class_var;
+	double neg_class_mean, neg_class_var;
 
-	vector<int> cluster_labels, counters;
-	Dataset dataset;
-	vector< vector<double> > cluster_centers;
-	int nclusters;
-	int nsamples, dim;
-	int iterations;
-	double prev_error, error; 	
-
+	double log_resp_shift;
 };
+
+
 
 #endif

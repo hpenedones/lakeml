@@ -16,17 +16,30 @@
  *   You should have received a copy of the GNU General Public License
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
- 
-#include <Classifier.h>
 
-#ifndef CLSSFACT
-#define CLSSFACT
+#ifndef THRLRN
+#define THRLRN
 
-class ClassifierFactory {
+#include "Classifier.h"
 
+/// Simple classifier that finds the best threshold to separate two classes based on a single feature
+class ThresholdLearner : public Classifier
+{
 public:
-	virtual Classifier * createRandomInstance() const = 0;
-	
+	ThresholdLearner();
+	ThresholdLearner( unsigned int feature_index);
+
+	// inherited from Classifier
+	void train(const Dataset & training_dataset, const vector<double> &data_weights);
+	double response(const DataInstance & data_instance) const;
+	int	   classify(const DataInstance & data_instance) const;
+
+private:
+
+	unsigned int feature_index;
+	double optimal_threshold;
+	int label_on_left;
+
 };
 
 #endif

@@ -1,8 +1,8 @@
 
 #include <iostream>
 
-#include "..\include\Dataset.h"
-#include "..\include\kmeans.h"
+#include "lakeml/src/Dataset.h"
+#include "lakeml/src/kmeans.h"
 
 
 int main(int argc, char **argv) {
@@ -25,7 +25,14 @@ int main(int argc, char **argv) {
 	Kmeans k(data, 2);
 	k.run(2, 0.1f);
 
-	std::cout << "Hello world" << std::endl;
+	for (int i = 0; i < data.size(); ++i)
+	{
+		for (int j = 0; j < data[i].size(); ++j)
+		{
+			std::cout << " " << data[i][j];
+		}
+		std::cout << std::endl;
+	}
 
 	return 0;
 }

@@ -17,13 +17,6 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef BUILDING_THE_DLL
-#define EXPORTED __declspec(dllexport)
-#else
-#define EXPORTED __declspec(dllimport)
-#endif
-
-
 
 #include <set>
 #include <vector>
@@ -35,31 +28,31 @@ using namespace std;
 
 #define DataInstance vector<double>
 
-/*
-public:
+// class DataInstance {
+// public:
 
-	DataInstance(int dimension) : data(dimension)
-	{
+// 	DataInstance(int dimension) : data(dimension)
+// 	{
 
-	}
+// 	}
 
-	double operator [](size_t feature_index) const 
-	{
-		return data[feature_index];
-	}
+// 	double operator [](size_t feature_index) const 
+// 	{
+// 		return data[feature_index];
+// 	}
 
-	size_t size() const
-	{
-		return data.size();
-	}
+// 	size_t size() const
+// 	{
+// 		return data.size();
+// 	}
 
-protected:
-	vector<double> data;
-};
+// protected:
+// 	vector<double> data;
+// };
 
-*/
 
-class EXPORTED  Dataset {
+
+class Dataset {
 	
 public:	
 	
@@ -68,7 +61,7 @@ public:
 		return data.size();
 	}
 	
-	const DataInstance & operator [](unsigned int sample_index) const 
+    const DataInstance & operator [](unsigned int sample_index) const
 	{
 		return data[sample_index];
 	}
@@ -87,7 +80,7 @@ public:
 
 protected:
 	
-	vector< const DataInstance > data;
+	vector< DataInstance > data;
 	vector< int > labels;
 
 };

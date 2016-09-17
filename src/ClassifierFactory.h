@@ -17,41 +17,18 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Classifier.h"
 
-#include <Classifier.h>
-#include <math_utils.h>
-#include <math.h>
-#include <Dataset.h>
+#ifndef CLSSFACT
+#define CLSSFACT
 
-#ifndef GAUSSIANLEARNER_H_
-#define GAUSSIANLEARNER_H_
-
-class GaussianLearner: public Classifier
-{
+class ClassifierFactory {
 
 public:
-	
-	GaussianLearner();
-	GaussianLearner(unsigned int feature_index);
-	~GaussianLearner();
-	
-	void train(const Dataset & training_dataset, vector<double> &data_weights);
-	double response(const DataInstance & data_instance) const;
-	int	   classify(const DataInstance & data_instance) const;
+	virtual Classifier * createRandomInstance() const = 0;
 
-private:
-
-	unsigned int feature_index;
-
-	double log_probability_pos_class(double val) const; 
-	double log_probability_neg_class(double val) const; 
-	
-	double pos_class_mean, pos_class_var;
-	double neg_class_mean, neg_class_var;
-	
-	double log_resp_shift;	
 };
 
+#endif
 
 
-#endif 

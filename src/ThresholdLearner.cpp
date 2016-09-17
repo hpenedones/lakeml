@@ -18,116 +18,117 @@
 */
 
 #include <algorithm>
-#include <float.h>
 #include <cmath>
-#include <math_utils.h>
-#include <ThresholdLearner.h>
+#include <float.h>
+
+#include "math_utils.h"
+#include "ThresholdLearner.h"
 
 ThresholdLearner::ThresholdLearner()
 {
 }
 
-ThresholdLearner::ThresholdLearner( unsigned int feature_index) : 
-feature_index(feature_index),
-optimal_threshold(0),
-label_on_left(-1)
-{	
+ThresholdLearner::ThresholdLearner( unsigned int feature_index) :
+	feature_index(feature_index),
+	optimal_threshold(0),
+	label_on_left(-1)
+{
 }
 
 
-void ThresholdLearner::train(const Dataset & training_dataset, vector<double> &all_data_weights)
+void ThresholdLearner::train(const Dataset & training_dataset, const vector<double> &all_data_weights)
 {
 	assert(training_dataset.size() > 0);
 	assert(training_dataset.size() == all_data_weights.size());
-		
+
 	vector< pair<double, int> > feature_vals;
 	vector<int> true_labels;
 	vector<double> data_weights;
-	
+
 	double min_error = DBL_MAX;
-	
+
 	// compute feature (real-valued number) for each data sample
 	int nsamples = 0;
-	for(unsigned int i=0; i<training_dataset.size(); i++)
+	for (unsigned int i = 0; i < training_dataset.size(); i++)
 	{
 		double fval = training_dataset[i][feature_index];
 
-		if (isfinite(fval) )  // discard samples where feature is N.A. 
-			{
-				feature_vals.push_back( pair<double, int>(fval, nsamples));
-				true_labels.push_back(training_dataset.getLabelAt(i));	
-				data_weights.push_back(all_data_weights[i]);	
-				nsamples++;
-
-			}
-	}	
-	
-	if( nsamples == 0)
+		if (isfinite(fval) )  // discard samples where feature is N.A.
 		{
-			// put arbitrary values and exit (it will not be selected anyways and
-			// even if it was classifier would respond always zero)
-			min_error = DBL_MAX;
-			optimal_threshold = 0.0;
-			label_on_left = 1;
-			return;
-		}	
+			feature_vals.push_back( pair<double, int>(fval, nsamples));
+			true_labels.push_back(training_dataset.getLabelAt(i));
+			data_weights.push_back(all_data_weights[i]);
+			nsamples++;
+
+		}
+	}
+
+	if ( nsamples == 0)
+	{
+		// put arbitrary values and exit (it will not be selected anyways and
+		// even if it was classifier would respond always zero)
+		min_error = DBL_MAX;
+		optimal_threshold = 0.0;
+		label_on_left = 1;
+		return;
+	}
 
 	// sort according to feature value
-	sort(feature_vals.begin(), feature_vals.end());  	
+	sort(feature_vals.begin(), feature_vals.end());
 
 	// initialize variables
 	double false_positives_if_inc = 0, false_negatives_if_inc = 0;		// if negatives are on the left of decision threshold (increasing -1 : 1)
 	double false_positives_if_dec = 0, false_negatives_if_dec = 0;		// if positives are on the left of decision threshold (decreasing 1 : -1)
-	
-	for(int i=0; i<nsamples; i++)
+
+	for (int i = 0; i < nsamples; i++)
 		if ( true_labels[i] < 0)
 			false_positives_if_inc += data_weights[i];
 		else
 			false_negatives_if_dec += data_weights[i];
-	
+
 	optimal_threshold = feature_vals[0].first;
-	
-		
+
+
 	if (false_positives_if_inc < false_negatives_if_dec)
-		{
-			min_error = false_positives_if_inc;
-			label_on_left = -1; 
-		}
+	{
+		min_error = false_positives_if_inc;
+		label_on_left = -1;
+	}
 	else
-		{
-			min_error = false_negatives_if_dec;
-			label_on_left = 1; 
-		}
-		
-		
-	// find split of minimum error 
-	for(int i=1; i<nsamples; i++)
-	{		
+	{
+		min_error = false_negatives_if_dec;
+		label_on_left = 1;
+	}
+
+
+	// find split of minimum error
+	for (int i = 1; i < nsamples; i++)
+	{
 		int curr_ind = feature_vals[i].second;
-		
+
 		if (true_labels[curr_ind] < 0)
-			{
-				false_positives_if_inc -= data_weights[curr_ind];   
-				false_positives_if_dec += data_weights[curr_ind];
-			}
-			else
-			{
-				false_negatives_if_inc += data_weights[curr_ind];
-				false_negatives_if_dec -= data_weights[curr_ind];
-			}
-		
+		{
+			false_positives_if_inc -= data_weights[curr_ind];
+			false_positives_if_dec += data_weights[curr_ind];
+		}
+		else
+		{
+			false_negatives_if_inc += data_weights[curr_ind];
+			false_negatives_if_dec -= data_weights[curr_ind];
+		}
+
 		if ( (feature_vals[i].first > optimal_threshold) )  // otherwise can not use this value to split between samples
 		{
 			double error_if_inc = false_positives_if_inc + false_negatives_if_inc;
 			double error_if_dec = false_positives_if_dec + false_negatives_if_dec;
-						
+
 			if (error_if_inc < min_error)
 			{
 				label_on_left = -1;
 				min_error = error_if_inc;
 				optimal_threshold = feature_vals[i].first;
 			}
-			
+
 			if (error_if_dec < min_error)
 			{
 				label_on_left = 1;
@@ -135,28 +136,28 @@ void ThresholdLearner::train(const Dataset & training_dataset, vector<double> &a
 				optimal_threshold = feature_vals[i].first;
 			}
 		}
-	}	
+	}
 }
 
 
 double ThresholdLearner::response(const DataInstance & data_instance) const
 {
 	double fval = data_instance[feature_index];
-	
-	if(!isfinite(fval))
+
+	if (!isfinite(fval))
 		return fval;
-	
+
 	return (fval - optimal_threshold);
 }
 
-int	ThresholdLearner::classify(const DataInstance & data_instance) const 
+int	ThresholdLearner::classify(const DataInstance & data_instance) const
 {
 	double resp = response(data_instance);
-	
+
 	if (!isfinite(resp)) return 0;
-	
+
 	return (resp < 0) ? label_on_left : -label_on_left;
-	
+
 }
 
 

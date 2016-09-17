@@ -17,10 +17,11 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Classifier.h>
 #include <vector>
-#include <ClassifierFactory.h>
 #include <iostream>
+
+#include "Classifier.h"
+#include "ClassifierFactory.h"
 
 using namespace std;
 
@@ -30,20 +31,20 @@ using namespace std;
 
 class NaiveBayesClassifier : public Classifier
 {
-	
+
 public:
 	NaiveBayesClassifier ();
-	NaiveBayesClassifier(const ClassifierFactory* classifier_factory, int numweak_learners); 
-	
+	NaiveBayesClassifier(const ClassifierFactory* classifier_factory, int numweak_learners);
+
 	~NaiveBayesClassifier ();
-	
+
 	// declared virtual in Classifier
-	void   train(const Dataset & training_dataset, vector<double> &weights);
+	void   train(const Dataset & training_dataset, const vector<double> &weights);
 	double response(const DataInstance & data_instance) const;
 	int	   classify(const DataInstance & data_instance) const;
-	
+
 private:
-	
+
 	const ClassifierFactory * classifier_factory;
 	int learners_to_add;
 
@@ -51,4 +52,4 @@ private:
 	vector<Classifier *> weak_learners;
 };
 
-#endif 
+#endif

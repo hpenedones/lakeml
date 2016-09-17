@@ -25,45 +25,46 @@
 
 #include <vector>
 #include <iostream>
-using namespace std;
 
-#include <Classifier.h>
-#include <ClassifierFactory.h>
-#include <LossFunction.h>
+#include "Classifier.h"
+#include "ClassifierFactory.h"
+#include "LossFunction.h"
+
+using namespace std;
 
 /// Linear combination of classifiers (weak learners) trained by the AdaBoost algorithm
 class BoostedClassifier : public Classifier {
 
 public:
-	
+
 	BoostedClassifier();
 	BoostedClassifier(const ClassifierFactory * classifier_factory, int max_weak_learners, int weak_learner_trials);
 
 	int	 getNumWeakLearners();
-	
+
 	// declared virtual in Classifier
 	void   train(const Dataset & training_dataset, vector<double> &weights);
 	int	   classify(const DataInstance & data_instance) const;
-	double response(const DataInstance & data_instance) const;	
-	// response using only the part of the weak learners 
+	double response(const DataInstance & data_instance) const;
+	// response using only the part of the weak learners
 	double response(const DataInstance & data_instance, int first_weak_learner, int nb_weak_learners) const;
-	
+
 private:
 
-	// parameters of learning algorithm 
+	// parameters of learning algorithm
 	const LossFunction * loss_function;
 	const ClassifierFactory * classifier_factory;
 	int learners_to_add;
 	int trials_per_learner;
-	
+
 	// vectors used training
 	vector<double> responses, curr_data_weights;
 	vector<int> curr_weak_learner_predictions, best_weak_learner_predictions;
-	
-	// results of training the boosted classifier 
+
+	// results of training the boosted classifier
 	vector<double> weak_learners_weights;
 	vector<Classifier *> weak_learners;
-	double decision_threshold;	
+	double decision_threshold;
 };
 
 #endif

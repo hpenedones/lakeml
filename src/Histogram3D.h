@@ -17,31 +17,38 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef THRLRN
-#define THRLRN
 
-#include <Classifier.h>
 
-/// Simple classifier that finds the best threshold to separate two classes based on a single feature
-class ThresholdLearner : public Classifier
+#include <algorithm>
+#include <iostream>
+
+
+using namespace std;
+
+class Histogram3D
 {
 public:
-	ThresholdLearner();
-	ThresholdLearner( unsigned int feature_index);
-	
-	// inherited from Classifier
-	void train(const Dataset & training_dataset, vector<double> &data_weights);
-	double response(const DataInstance & data_instance) const;
-	int	   classify(const DataInstance & data_instance) const;
-	
-  private:
-	
-	unsigned int feature_index;
-	double optimal_threshold;
-	int label_on_left;
+
+
+	Histogram3D (int nbins, int upper_limit);
+
+	~Histogram3D();
+
+	// kernel density estimation (using a cube of the same dimension as the histogram bins)
+	void addPoint(int x, int y, int z, double weight);
+
+	double getPointProbability(int x, int y, int z);
+
+
+private:
+
+	static const double numerical_delta; // = 0.000001;
+	static const double residual_mass;//  = 0.1;
+
+
+	int upper_limit;
+	int nbins;
+	double * hist;
+	double total_mass, bin_size;
 
 };
-
-#endif
-
-

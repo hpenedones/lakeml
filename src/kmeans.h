@@ -17,38 +17,41 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Dataset.h"
 
+#ifndef KMEANS_H_
+#define KMEANS_H_
 
-#include <algorithm>
-#include <iostream>
+class  Kmeans {
 
+	friend class GaussianMixtureModel;
 
-using namespace std;
-
-class Histogram3D
-{
 public:
 
+	Kmeans(const Dataset & dataset, int nclusters);
+	~Kmeans();
 
-	Histogram3D (int nbins, int upper_limit);
-	
-	~Histogram3D();
-	
-	// kernel density estimation (using a cube of the same dimension as the histogram bins)
-	void addPoint(int x, int y, int z, double weight);
-		
-	double getPointProbability(int x, int y, int z);
-
+	int run(int max_iterations, float min_delta_improv);
+	int getClosestClusterLabel(const DataInstance & x) const;
 
 private:
 
-	static const double numerical_delta; // = 0.000001;
-	static const double residual_mass;//  = 0.1;
+	void initialize();
+	void computeCenters();
+	void updateAssignments();
+	double computeError();
+	void oneStep();
 
-	
-	int upper_limit;
-	int nbins;
-	double * hist;
-	double total_mass, bin_size;
+	double l2norm(const DataInstance & x, const vector<double> & y) const;
+
+	vector<int> cluster_labels, counters;
+	Dataset dataset;
+	vector< vector<double> > cluster_centers;
+	int nclusters;
+	int nsamples, dim;
+	int iterations;
+	double prev_error, error;
 
 };
+
+#endif

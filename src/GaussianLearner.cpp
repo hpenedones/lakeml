@@ -20,10 +20,10 @@
 
 #define _USE_MATH_DEFINES
 
-#include <GaussianLearner.h>
+#include "GaussianLearner.h"
 #include <cmath>
 
-GaussianLearner::GaussianLearner() 
+GaussianLearner::GaussianLearner()
 {
 	pos_class_mean = 0;
 	pos_class_var  = 1;
@@ -42,86 +42,85 @@ GaussianLearner::GaussianLearner(unsigned int feature_index)
 	log_resp_shift = 0;
 }
 
-GaussianLearner::~GaussianLearner() 
+GaussianLearner::~GaussianLearner()
 {
 
 }
 
 
-
-void GaussianLearner::train(const Dataset & training_dataset, vector<double> &data_weights) 
+void GaussianLearner::train(const Dataset & training_dataset, const vector<double> &data_weights)
 {
 	assert(training_dataset.size() > 0);
 	assert(training_dataset.size() == data_weights.size());
-	
+
 	vector<double> pos_class_resp, neg_class_resp;
 
 	// compute feature (real-valued number) for each data sample
-	for(unsigned int i=0; i<training_dataset.size(); i++)
+	for (unsigned int i = 0; i < training_dataset.size(); i++)
 	{
 		double fval = training_dataset[i][feature_index];
 
-		if (isfinite(fval) )  // discard samples where feature is N.A. 
-			{
-				if ( training_dataset.getLabelAt(i) == 1) 
-					pos_class_resp.push_back(fval);
-				else 				
-					neg_class_resp.push_back(fval);
-			}
-	}
-	
-	if (pos_class_resp.size() <= 2 || neg_class_resp.size() <= 2 )
+		if (isfinite(fval) )  // discard samples where feature is N.A.
 		{
-			return; // can't learn! keep default useless values
+			if ( training_dataset.getLabelAt(i) == 1)
+				pos_class_resp.push_back(fval);
+			else
+				neg_class_resp.push_back(fval);
 		}
-	
+	}
+
+	if (pos_class_resp.size() <= 2 || neg_class_resp.size() <= 2 )
+	{
+		return; // can't learn! keep default useless values
+	}
+
 	// assert(pos_class_resp.size() >= 2);
 	// assert(neg_class_resp.size() >= 2);
-	
+
 	pos_class_mean = mean(pos_class_resp, data_weights);
 	pos_class_var  = variance(pos_class_resp, data_weights, pos_class_mean);
-		
+
 	neg_class_mean = mean(neg_class_resp, data_weights);
 	neg_class_var  = variance(neg_class_resp, data_weights, neg_class_mean);
-	
-	log_resp_shift = log(sqrt(2*M_PI*pos_class_var)) - log(sqrt(2*M_PI*neg_class_var));
+
+	log_resp_shift = log(sqrt(2 * M_PI * pos_class_var)) - log(sqrt(2 * M_PI * neg_class_var));
 }
 
 // return log probability
 
-double GaussianLearner::log_probability_pos_class(double val) const 
+double GaussianLearner::log_probability_pos_class(double val) const
 {
-	return -0.5*pow(val - pos_class_mean,2)/pos_class_var - log(sqrt(2*M_PI*pos_class_var));
+	return -0.5 * pow(val - pos_class_mean, 2) / pos_class_var - log(sqrt(2 * M_PI * pos_class_var));
 }
 
-double GaussianLearner::log_probability_neg_class(double val) const 
+double GaussianLearner::log_probability_neg_class(double val) const
 {
-	return -0.5*pow(val - neg_class_mean,2)/neg_class_var - log(sqrt(2*M_PI*neg_class_var));
+	return -0.5 * pow(val - neg_class_mean, 2) / neg_class_var - log(sqrt(2 * M_PI * neg_class_var));
 }
 
-double GaussianLearner::response(const DataInstance & data_instance) const 
+double GaussianLearner::response(const DataInstance & data_instance) const
 {
 	double val = data_instance[feature_index];
-	
-	if (!isfinite(val)) 
+
+	if (!isfinite(val))
 		return val;
-	
-	double result = -0.5*( (val - pos_class_mean)*(val - pos_class_mean)/pos_class_var -
-	 			  		   (val - neg_class_mean)*(val - neg_class_mean)/neg_class_var	 );
-	
+
+	double result = -0.5 * ( (val - pos_class_mean) * (val - pos_class_mean) / pos_class_var -
+	                         (val - neg_class_mean) * (val - neg_class_mean) / neg_class_var	 );
+
 	return result;
 }
 
-int GaussianLearner::classify(const DataInstance & data_instance) const 
+int GaussianLearner::classify(const DataInstance & data_instance) const
 {
 	double fval = response(data_instance);
-	
-	if (!isfinite(fval)) 
+
+	if (!isfinite(fval))
 		return 0;
-	
+
 	if ( fval > log_resp_shift)
 		return 1;
-		
+
 	return -1;
 }
 
