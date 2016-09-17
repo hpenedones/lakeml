@@ -22,7 +22,7 @@
 #include <float.h>
 
 #include "math_utils.h"
-#include "ThresholdLearner.h"
+#include "threshold_learner.h"
 
 ThresholdLearner::ThresholdLearner()
 {

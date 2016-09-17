@@ -17,28 +17,15 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef THRLRN
-#define THRLRN
+#include "classifier.h"
 
-#include "Classifier.h"
+#ifndef CLSSFACT
+#define CLSSFACT
 
-/// Simple classifier that finds the best threshold to separate two classes based on a single feature
-class ThresholdLearner : public Classifier
-{
+class ClassifierFactory {
+
 public:
-    ThresholdLearner();
-    ThresholdLearner( unsigned int feature_index);
-
-    // inherited from Classifier
-    void train(const Dataset & training_dataset, const vector<double> &data_weights);
-    double response(const DataInstance & data_instance) const;
-    int    classify(const DataInstance & data_instance) const;
-
-private:
-
-    unsigned int feature_index;
-    double optimal_threshold;
-    int label_on_left;
+    virtual Classifier * createRandomInstance() const = 0;
 
 };
 

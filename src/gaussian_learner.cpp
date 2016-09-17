@@ -20,8 +20,9 @@
 
 #define _USE_MATH_DEFINES
 
-#include "GaussianLearner.h"
 #include <cmath>
+
+#include "gaussian_learner.h"
 
 GaussianLearner::GaussianLearner()
 {

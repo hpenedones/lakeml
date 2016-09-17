@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <math.h>
 
-#include "NaiveBayesClassifier.h"
+#include "naive_bayes_classifier.h"
 #include "math_utils.h"
 
 
@@ -65,12 +65,6 @@ void NaiveBayesClassifier::train(const Dataset & training_dataset, const vector<
         else
             neg_responses.push_back(my_resp);
     }
-
-    double pos_mean = mean(pos_responses, weights);
-    double pos_var  = variance(pos_responses, weights, pos_mean);
-
-    double neg_mean = mean(neg_responses, weights);
-    double neg_var  = variance(neg_responses, weights, neg_mean);
 
     /*
         \fixme this is an arbitrary choice

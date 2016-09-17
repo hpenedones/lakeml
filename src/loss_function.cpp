@@ -20,8 +20,8 @@
 #include <cassert>
 #include <iostream>
 
-#include "LossFunction.h"
-#include "Dataset.h"
+#include "dataset.h"
+#include "loss_function.h"
 #include "math.h"
 
 using namespace std;

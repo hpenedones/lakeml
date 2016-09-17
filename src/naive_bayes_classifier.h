@@ -17,38 +17,39 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-#include <algorithm>
 #include <iostream>
+#include <vector>
 
+#include "classifier.h"
+#include "classifier_factory.h"
 
 using namespace std;
 
-class Histogram3D
+#ifndef NAIVEBAYESCLASSIFIER_H_
+#define NAIVEBAYESCLASSIFIER_H_
+
+
+class NaiveBayesClassifier : public Classifier
 {
+
 public:
+    NaiveBayesClassifier ();
+    NaiveBayesClassifier(const ClassifierFactory* classifier_factory, int numweak_learners);
 
+    ~NaiveBayesClassifier ();
 
-    Histogram3D (int nbins, int upper_limit);
-
-    ~Histogram3D();
-
-    // kernel density estimation (using a cube of the same dimension as the histogram bins)
-    void addPoint(int x, int y, int z, double weight);
-
-    double getPointProbability(int x, int y, int z);
-
+    // declared virtual in Classifier
+    void   train(const Dataset & training_dataset, const vector<double> &weights);
+    double response(const DataInstance & data_instance) const;
+    int    classify(const DataInstance & data_instance) const;
 
 private:
 
-    static const double numerical_delta; // = 0.000001;
-    static const double residual_mass;//  = 0.1;
+    const ClassifierFactory * classifier_factory;
+    int learners_to_add;
 
-
-    int upper_limit;
-    int nbins;
-    double * hist;
-    double total_mass, bin_size;
-
+    double decision_threshold;
+    vector<Classifier *> weak_learners;
 };
+
+#endif

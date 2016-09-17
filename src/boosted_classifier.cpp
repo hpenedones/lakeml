@@ -19,11 +19,11 @@
 
 #include <cmath>
 #include <float.h>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
+#include "boosted_classifier.h"
 #include "math_utils.h"
-#include "BoostedClassifier.h"
 
 using namespace std;
 
@@ -49,7 +49,7 @@ int BoostedClassifier::getNumWeakLearners()
     return weak_learners.size();
 }
 
-void BoostedClassifier::train(const Dataset & training_dataset, vector<double> & initial_data_weights)
+void BoostedClassifier::train(const Dataset & training_dataset, const vector<double> & initial_data_weights)
 {
     // assertions
     {

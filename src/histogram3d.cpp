@@ -20,7 +20,7 @@
 
 #include <cassert>
 
-#include "Histogram3D.h"
+#include "histogram3d.h"
 #include "math.h"
 
 

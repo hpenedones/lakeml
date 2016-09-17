@@ -17,8 +17,8 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Dataset.h"
-#include "Classifier.h"
+#include "classifier.h"
+#include "dataset.h"
 
 #ifndef GMM_H_
 #define GMM_H_

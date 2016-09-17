@@ -25,9 +25,9 @@
 #include <float.h>
 #include <iostream>
 
-#include "GaussianMixtureModel.h"
+#include "gaussian_mixture_model.h"
+#include "kmeans.h"
 #include "math_utils.h"
-#include "Kmeans.h"
 
 using namespace std;
 

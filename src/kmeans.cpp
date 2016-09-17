@@ -17,11 +17,11 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
 #include <cassert>
 #include <cfloat>
+#include <iostream>
 
-#include "Kmeans.h"
+#include "kmeans.h"
 #include "math.h"
 
 

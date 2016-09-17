@@ -23,12 +23,12 @@
 #ifndef BOOSTEDLEARNER
 #define BOOSTEDLEARNER
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
-#include "Classifier.h"
-#include "ClassifierFactory.h"
-#include "LossFunction.h"
+#include "classifier.h"
+#include "classifier_factory.h"
+#include "loss_function.h"
 
 using namespace std;
 
@@ -43,7 +43,7 @@ public:
     int  getNumWeakLearners();
 
     // declared virtual in Classifier
-    void   train(const Dataset & training_dataset, vector<double> &weights);
+    void   train(const Dataset & training_dataset, const vector<double> &weights);
     int    classify(const DataInstance & data_instance) const;
     double response(const DataInstance & data_instance) const;
     // response using only the part of the weak learners
