@@ -28,7 +28,7 @@
 
 #include "classifier.h"
 #include "classifier_factory.h"
-#include "loss_function.h"
+#include "exponential_loss.h"
 
 using namespace std;
 
@@ -52,7 +52,7 @@ public:
 private:
 
     // parameters of learning algorithm
-    const LossFunction * loss_function;
+    const ExponentialLoss * loss_function;
     const ClassifierFactory * classifier_factory;
     int learners_to_add;
     int trials_per_learner;

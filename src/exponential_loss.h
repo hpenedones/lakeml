@@ -20,10 +20,11 @@
 #include <vector>
 
 #include "dataset.h"
+#include "loss.h"
 
 using namespace std;
 
-class LossFunction
+class ExponentialLoss : Loss
 {
 public:
 
@@ -39,8 +40,8 @@ public:
                    const vector<double> & responses,
                    vector<double> & out_gradient) const;
 
-    // computes how far one should move along a given direction in order to minimize the loss the most
-    // it puts its return values in the doubles of the last 2 arguments, for which we have the pointers
+    // Computes how far one should move along a given direction in order to minimize the loss the most.
+    // It puts its return values in the doubles of the last 2 arguments, for which we have the pointers.
     void optimal_step_along_direction(const Dataset & dataset,
                                       const vector<double> & data_weights,
                                       const vector<double> & responses,

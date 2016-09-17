@@ -21,13 +21,13 @@
 #include <iostream>
 
 #include "dataset.h"
-#include "loss_function.h"
+#include "exponential_loss.h"
 #include "math.h"
 
 using namespace std;
 
 // computes the value of the loss function for a given dataset and responses of a classifier on those samples
-void LossFunction::value( const Dataset & dataset,
+void ExponentialLoss::value( const Dataset & dataset,
                           const vector<double> & data_weights,
                           const vector<double> & responses,
                           vector<double> & out_loss) const
@@ -44,7 +44,7 @@ void LossFunction::value( const Dataset & dataset,
 }
 
 // computes the gradient of the loss function (which is a vector with one dimension per sample in the dataset)
-void LossFunction::gradient( const Dataset & dataset,
+void ExponentialLoss::gradient( const Dataset & dataset,
                              const vector<double> & data_weights,
                              const vector<double> & responses,
                              vector<double> & out_gradient) const
@@ -62,7 +62,7 @@ void LossFunction::gradient( const Dataset & dataset,
 
 // computes how far one should move along a given direction in order to minimize the loss the most
 // it puts its return values in the doubles of the last 2 arguments, for which we have the pointers
-void LossFunction::optimal_step_along_direction(const Dataset & dataset,
+void ExponentialLoss::optimal_step_along_direction(const Dataset & dataset,
         const vector<double> & data_weights,
         const vector<double> & responses,
         const vector<int> & direction,
