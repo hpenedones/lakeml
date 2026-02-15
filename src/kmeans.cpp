@@ -24,6 +24,7 @@
 #include "kmeans.h"
 #include "math.h"
 
+using namespace std;
 
 Kmeans::Kmeans(const Dataset &dataset, int nclusters) : cluster_labels(dataset.size()), counters(nclusters)
 {

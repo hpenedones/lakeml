@@ -24,6 +24,8 @@
 
 #include "gaussian_learner.h"
 
+using namespace std;
+
 GaussianLearner::GaussianLearner()
 {
     pos_class_mean = 0;

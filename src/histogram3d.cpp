@@ -23,6 +23,7 @@
 #include "histogram3d.h"
 #include "math.h"
 
+using namespace std;
 
 const double Histogram3D::numerical_delta = 0.000001;
 const double Histogram3D::residual_mass  = 0.1;

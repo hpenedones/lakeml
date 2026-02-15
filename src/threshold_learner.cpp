@@ -24,6 +24,8 @@
 #include "math_utils.h"
 #include "threshold_learner.h"
 
+using namespace std;
+
 ThresholdLearner::ThresholdLearner()
 {
 }
