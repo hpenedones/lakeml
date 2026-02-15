@@ -1,0 +1,11 @@
+# Bazel configuration for lakeml project
+
+# Common build settings
+build --cxxopt=-std=c++11
+build --host_cxxopt=-std=c++11
+
+# Test output settings
+test --test_output=errors
+
+# Don't check for latest Bazel version
+startup --host_jvm_args=-Xmx2048m
