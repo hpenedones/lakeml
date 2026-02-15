@@ -45,19 +45,17 @@ TEST_F(GaussianMixtureModelTest, BasicTraining) {
     // First cluster around (1, 1)
     for (int i = 0; i < 5; i++) {
         DataInstance sample;
-        sample.features.push_back(1.0 + i * 0.1);
-        sample.features.push_back(1.0 + i * 0.1);
-        sample.label = 1;
-        training_dataset.push_back(sample);
+        sample.push_back(1.0 + i * 0.1);
+        sample.push_back(1.0 + i * 0.1);
+        training_dataset.add(sample, 1);
     }
     
     // Second cluster around (-1, -1)
     for (int i = 0; i < 5; i++) {
         DataInstance sample;
-        sample.features.push_back(-1.0 - i * 0.1);
-        sample.features.push_back(-1.0 - i * 0.1);
-        sample.label = -1;
-        training_dataset.push_back(sample);
+        sample.push_back(-1.0 - i * 0.1);
+        sample.push_back(-1.0 - i * 0.1);
+        training_dataset.add(sample, -1);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -73,10 +71,10 @@ TEST_F(GaussianMixtureModelTest, ClassifyAfterTraining) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -84,8 +82,8 @@ TEST_F(GaussianMixtureModelTest, ClassifyAfterTraining) {
 
     // Test classification on a sample
     DataInstance test_sample;
-    test_sample.features.push_back(3.0);
-    test_sample.features.push_back(3.0);
+    test_sample.push_back(3.0);
+    test_sample.push_back(3.0);
     
     int classification = gmm->classify(test_sample);
     
@@ -100,9 +98,9 @@ TEST_F(GaussianMixtureModelTest, ResponseAfterTraining) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -110,7 +108,7 @@ TEST_F(GaussianMixtureModelTest, ResponseAfterTraining) {
 
     // Test response on a sample
     DataInstance test_sample;
-    test_sample.features.push_back(3.0);
+    test_sample.push_back(3.0);
     
     double response = gmm->response(test_sample);
     
@@ -125,9 +123,9 @@ TEST_F(GaussianMixtureModelTest, DifferentNumberOfGaussians) {
     Dataset training_dataset;
     for (int i = 0; i < 15; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(15, 1.0);
@@ -142,16 +140,16 @@ TEST_F(GaussianMixtureModelTest, ClassificationConsistency) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
     gmm->train(training_dataset, weights);
 
     DataInstance test_sample;
-    test_sample.features.push_back(3.0);
+    test_sample.push_back(3.0);
     
     // Multiple calls should give the same result
     int class1 = gmm->classify(test_sample);
@@ -166,11 +164,11 @@ TEST_F(GaussianMixtureModelTest, MultidimensionalData) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.features.push_back(static_cast<double>(i * 2));
-        sample.features.push_back(static_cast<double>(i * 3));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        sample.push_back(static_cast<double>(i * 2));
+        sample.push_back(static_cast<double>(i * 3));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);

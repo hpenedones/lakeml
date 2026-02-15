@@ -43,9 +43,9 @@ TEST_F(ThresholdLearnerTest, TrainAndPredict) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -66,9 +66,9 @@ TEST_F(ThresholdLearnerTest, Classification) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -88,9 +88,9 @@ TEST_F(ThresholdLearnerTest, WeightedTraining) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     // Give more weight to first samples
@@ -111,11 +111,11 @@ TEST_F(ThresholdLearnerTest, MultidimensionalFeatures) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.features.push_back(static_cast<double>(i * 2));
-        sample.features.push_back(static_cast<double>(i * 3));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        sample.push_back(static_cast<double>(i * 2));
+        sample.push_back(static_cast<double>(i * 3));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -134,16 +134,16 @@ TEST_F(ThresholdLearnerTest, ResponseConsistency) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
     learner->train(training_dataset, weights);
 
     DataInstance test_sample;
-    test_sample.features.push_back(3.0);
+    test_sample.push_back(3.0);
     
     // Multiple calls should give the same result
     double response1 = learner->response(test_sample);
@@ -159,17 +159,15 @@ TEST_F(ThresholdLearnerTest, PerfectlySeparableData) {
     // Negative samples
     for (int i = 0; i < 5; i++) {
         DataInstance sample;
-        sample.features.push_back(-10.0 - i);
-        sample.label = -1;
-        training_dataset.push_back(sample);
+        sample.push_back(-10.0 - i);
+        training_dataset.add(sample, -1);
     }
     
     // Positive samples
     for (int i = 0; i < 5; i++) {
         DataInstance sample;
-        sample.features.push_back(10.0 + i);
-        sample.label = 1;
-        training_dataset.push_back(sample);
+        sample.push_back(10.0 + i);
+        training_dataset.add(sample, 1);
     }
 
     std::vector<double> weights(10, 1.0);

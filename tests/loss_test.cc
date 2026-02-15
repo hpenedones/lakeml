@@ -41,12 +41,10 @@ TEST_F(ExponentialLossTest, ComputeLossValue) {
     // Create simple dataset with 2 samples
     Dataset dataset;
     DataInstance sample1, sample2;
-    sample1.features.push_back(1.0);
-    sample1.label = 1;
-    sample2.features.push_back(-1.0);
-    sample2.label = -1;
-    dataset.push_back(sample1);
-    dataset.push_back(sample2);
+    sample1.push_back(1.0);
+    sample2.push_back(-1.0);
+    dataset.add(sample1, 1);
+    dataset.add(sample2, -1);
 
     std::vector<double> weights = {1.0, 1.0};
     std::vector<double> responses = {0.5, -0.5};
@@ -65,12 +63,10 @@ TEST_F(ExponentialLossTest, ComputeGradient) {
     // Create simple dataset with 2 samples
     Dataset dataset;
     DataInstance sample1, sample2;
-    sample1.features.push_back(1.0);
-    sample1.label = 1;
-    sample2.features.push_back(-1.0);
-    sample2.label = -1;
-    dataset.push_back(sample1);
-    dataset.push_back(sample2);
+    sample1.push_back(1.0);
+    sample2.push_back(-1.0);
+    dataset.add(sample1, 1);
+    dataset.add(sample2, -1);
 
     std::vector<double> weights = {1.0, 1.0};
     std::vector<double> responses = {0.5, -0.5};
@@ -100,9 +96,8 @@ TEST_F(ExponentialLossTest, EmptyDataset) {
 TEST_F(ExponentialLossTest, ZeroWeights) {
     Dataset dataset;
     DataInstance sample;
-    sample.features.push_back(1.0);
-    sample.label = 1;
-    dataset.push_back(sample);
+    sample.push_back(1.0);
+    dataset.add(sample, 1);
 
     std::vector<double> weights = {0.0};
     std::vector<double> responses = {0.5};

@@ -57,9 +57,9 @@ TEST_F(BoostedClassifierTest, TrainAndPredict) {
     
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -86,9 +86,9 @@ TEST_F(BoostedClassifierTest, GetNumWeakLearners) {
     Dataset training_dataset;
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -104,9 +104,9 @@ TEST_F(BoostedClassifierTest, ResponseWithWeakLearnerRange) {
     Dataset training_dataset;
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
@@ -115,8 +115,7 @@ TEST_F(BoostedClassifierTest, ResponseWithWeakLearnerRange) {
     int num_learners = classifier->getNumWeakLearners();
     if (num_learners > 0) {
         DataInstance test_sample;
-        test_sample.features.push_back(3.0);
-        test_sample.label = -1;
+        test_sample.push_back(3.0);
 
         // Test response using only first weak learner
         double response = classifier->response(test_sample, 0, 1);
@@ -130,17 +129,16 @@ TEST_F(BoostedClassifierTest, ClassificationConsistency) {
     Dataset training_dataset;
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);
     classifier->train(training_dataset, weights);
 
     DataInstance test_sample;
-    test_sample.features.push_back(3.0);
-    test_sample.label = -1;
+    test_sample.push_back(3.0);
 
     // Multiple calls should give the same result
     int class1 = classifier->classify(test_sample);
@@ -154,9 +152,9 @@ TEST_F(BoostedClassifierTest, UniformWeights) {
     Dataset training_dataset;
     for (int i = 0; i < 10; i++) {
         DataInstance sample;
-        sample.features.push_back(static_cast<double>(i));
-        sample.label = (i < 5) ? -1 : 1;
-        training_dataset.push_back(sample);
+        sample.push_back(static_cast<double>(i));
+        int label = (i < 5) ? -1 : 1;
+        training_dataset.add(sample, label);
     }
 
     std::vector<double> weights(10, 1.0);

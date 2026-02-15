@@ -43,12 +43,10 @@ TEST_F(ClassifierTest, BatchResponse) {
     // Create simple training dataset
     Dataset training_dataset;
     DataInstance sample1, sample2;
-    sample1.features.push_back(1.0);
-    sample1.label = 1;
-    sample2.features.push_back(-1.0);
-    sample2.label = -1;
-    training_dataset.push_back(sample1);
-    training_dataset.push_back(sample2);
+    sample1.push_back(1.0);
+    sample2.push_back(-1.0);
+    training_dataset.add(sample1, 1);
+    training_dataset.add(sample2, -1);
 
     std::vector<double> weights = {1.0, 1.0};
     classifier->train(training_dataset, weights);
@@ -67,12 +65,10 @@ TEST_F(ClassifierTest, BatchClassify) {
     // Create simple training dataset
     Dataset training_dataset;
     DataInstance sample1, sample2;
-    sample1.features.push_back(1.0);
-    sample1.label = 1;
-    sample2.features.push_back(-1.0);
-    sample2.label = -1;
-    training_dataset.push_back(sample1);
-    training_dataset.push_back(sample2);
+    sample1.push_back(1.0);
+    sample2.push_back(-1.0);
+    training_dataset.add(sample1, 1);
+    training_dataset.add(sample2, -1);
 
     std::vector<double> weights = {1.0, 1.0};
     classifier->train(training_dataset, weights);
@@ -102,20 +98,17 @@ TEST_F(ClassifierTest, SingleSample) {
     // Create training dataset
     Dataset training_dataset;
     DataInstance sample1, sample2;
-    sample1.features.push_back(1.0);
-    sample1.label = 1;
-    sample2.features.push_back(-1.0);
-    sample2.label = -1;
-    training_dataset.push_back(sample1);
-    training_dataset.push_back(sample2);
+    sample1.push_back(1.0);
+    sample2.push_back(-1.0);
+    training_dataset.add(sample1, 1);
+    training_dataset.add(sample2, -1);
 
     std::vector<double> weights = {1.0, 1.0};
     classifier->train(training_dataset, weights);
 
     // Test single sample
     DataInstance test_sample;
-    test_sample.features.push_back(0.5);
-    test_sample.label = 1;
+    test_sample.push_back(0.5);
     
     double response = classifier->response(test_sample);
     int classification = classifier->classify(test_sample);
