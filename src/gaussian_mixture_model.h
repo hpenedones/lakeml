@@ -28,7 +28,7 @@ class GaussianMixtureModel: public Classifier
 {
 public:
     GaussianMixtureModel(int nGaussians, int maxIterations);
-    void train(const Dataset & dataset, const vector<double> & weights);
+    void train(const Dataset & dataset, const std::vector<double> & weights);
     int  classify(const DataInstance & sample) const;
     double response(const DataInstance & sample) const;
 
@@ -36,11 +36,11 @@ public:
 private:
 
     //data
-    vector< vector<double> > means;
-    vector< vector<double> > diag_covs;
+    std::vector< std::vector<double> > means;
+    std::vector< std::vector<double> > diag_covs;
 
-    vector< vector<double> > resps, temp;
-    vector<double> weights, mass, log_sqrt_determinants;
+    std::vector< std::vector<double> > resps, temp;
+    std::vector<double> weights, mass, log_sqrt_determinants;
 
     int ngaussians, iterations, max_iterations, dim, nsamples;
     double pi_const;

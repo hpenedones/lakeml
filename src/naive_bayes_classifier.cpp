@@ -23,6 +23,7 @@
 #include "naive_bayes_classifier.h"
 #include "math_utils.h"
 
+using namespace std;
 
 NaiveBayesClassifier::NaiveBayesClassifier()
 {

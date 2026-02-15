@@ -42,11 +42,11 @@ private:
     double computeError();
     void oneStep();
 
-    double l2norm(const DataInstance & x, const vector<double> & y) const;
+    double l2norm(const DataInstance & x, const std::vector<double> & y) const;
 
-    vector<int> cluster_labels, counters;
+    std::vector<int> cluster_labels, counters;
     Dataset dataset;
-    vector< vector<double> > cluster_centers;
+    std::vector< std::vector<double> > cluster_centers;
     int nclusters;
     int nsamples, dim;
     int iterations;

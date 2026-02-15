@@ -1,8 +1,8 @@
 
 #include <iostream>
 
-#include "lakeml/src/Dataset.h"
-#include "lakeml/src/Kmeans.h"
+#include "src/dataset.h"
+#include "src/kmeans.h"
 
 
 int main(int argc, char **argv) {

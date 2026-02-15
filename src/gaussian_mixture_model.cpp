@@ -24,6 +24,7 @@
 #include <cmath>
 #include <float.h>
 #include <iostream>
+#include <limits>
 
 #include "gaussian_mixture_model.h"
 #include "kmeans.h"

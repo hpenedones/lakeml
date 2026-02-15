@@ -22,8 +22,6 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace std;
-
 class Histogram3D
 {
 public:

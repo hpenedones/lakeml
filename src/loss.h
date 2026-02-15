@@ -17,25 +17,30 @@
  *   along with lakeml.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef LOSS_H
+#define LOSS_H
+
 #include <vector>
 
 #include "dataset.h"
-
-using namespace std;
 
 class Loss
 {
 public:
 
+    virtual ~Loss() {}
+
     // computes the value of the loss function for a given dataset and responses of a classifier on those samples
     virtual void value( const Dataset & dataset,
-                        const vector<double> & data_weights,
-                        const vector<double> & responses,
-                        vector<double> & out_loss) const;
+                        const std::vector<double> & data_weights,
+                        const std::vector<double> & responses,
+                        std::vector<double> & out_loss) const;
 
     // computes the gradient of the loss function (which is a vector with one dimension per sample in the dataset)
     virtual void gradient( const Dataset & dataset,
-                           const vector<double> & data_weights,
-                           const vector<double> & responses,
-                           vector<double> & out_gradient) const;
+                           const std::vector<double> & data_weights,
+                           const std::vector<double> & responses,
+                           std::vector<double> & out_gradient) const;
 };
+
+#endif
