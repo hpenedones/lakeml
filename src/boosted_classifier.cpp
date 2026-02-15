@@ -77,7 +77,7 @@ void BoostedClassifier::train(const Dataset & training_dataset, const vector<dou
     for (int wl = 0; wl < learners_to_add; wl++)
     {
         double min_loss = DBL_MAX, best_weak_learner_weight;
-        Classifier * best_weak_learner;
+        Classifier * best_weak_learner = NULL;
 
         for (int trial = 0; trial < trials_per_learner; trial++)
         {
@@ -94,7 +94,8 @@ void BoostedClassifier::train(const Dataset & training_dataset, const vector<dou
             {
                 min_loss = loss_after_step;
                 best_weak_learner_weight = optimal_step;
-                delete best_weak_learner;    // delete previous best
+                if (best_weak_learner != NULL)
+                    delete best_weak_learner;    // delete previous best
                 best_weak_learner = current_weak_learner;
                 best_weak_learner_predictions = curr_weak_learner_predictions;
             }
