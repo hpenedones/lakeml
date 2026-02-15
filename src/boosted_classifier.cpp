@@ -53,7 +53,7 @@ void BoostedClassifier::train(const Dataset & training_dataset, const vector<dou
 {
     // assertions
     {
-        assert(classifier_factory != NULL);
+        assert(classifier_factory != nullptr);
         assert(training_dataset.size() > 0);
         assert(learners_to_add > 0);
         assert(trials_per_learner > 0);
@@ -77,7 +77,7 @@ void BoostedClassifier::train(const Dataset & training_dataset, const vector<dou
     for (int wl = 0; wl < learners_to_add; wl++)
     {
         double min_loss = DBL_MAX, best_weak_learner_weight;
-        Classifier * best_weak_learner = NULL;
+        Classifier * best_weak_learner = nullptr;
 
         for (int trial = 0; trial < trials_per_learner; trial++)
         {
@@ -94,7 +94,7 @@ void BoostedClassifier::train(const Dataset & training_dataset, const vector<dou
             {
                 min_loss = loss_after_step;
                 best_weak_learner_weight = optimal_step;
-                if (best_weak_learner != NULL)
+                if (best_weak_learner != nullptr)
                     delete best_weak_learner;    // delete previous best
                 best_weak_learner = current_weak_learner;
                 best_weak_learner_predictions = curr_weak_learner_predictions;
@@ -103,7 +103,7 @@ void BoostedClassifier::train(const Dataset & training_dataset, const vector<dou
                 delete current_weak_learner;
         }
 
-        assert(best_weak_learner != NULL);
+        assert(best_weak_learner != nullptr);
         assert(isfinite(best_weak_learner_weight));
 
         // add best weak learner to strong classifier
