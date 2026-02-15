@@ -30,8 +30,6 @@
 #include "classifier_factory.h"
 #include "exponential_loss.h"
 
-using namespace std;
-
 /// Linear combination of classifiers (weak learners) trained by the AdaBoost algorithm
 class BoostedClassifier : public Classifier {
 
@@ -43,7 +41,7 @@ public:
     int  getNumWeakLearners();
 
     // declared virtual in Classifier
-    void   train(const Dataset & training_dataset, const vector<double> &weights);
+    void   train(const Dataset & training_dataset, const std::vector<double> &weights);
     int    classify(const DataInstance & data_instance) const;
     double response(const DataInstance & data_instance) const;
     // response using only the part of the weak learners
@@ -58,12 +56,12 @@ private:
     int trials_per_learner;
 
     // vectors used training
-    vector<double> responses, curr_data_weights;
-    vector<int> curr_weak_learner_predictions, best_weak_learner_predictions;
+    std::vector<double> responses, curr_data_weights;
+    std::vector<int> curr_weak_learner_predictions, best_weak_learner_predictions;
 
     // results of training the boosted classifier
-    vector<double> weak_learners_weights;
-    vector<Classifier *> weak_learners;
+    std::vector<double> weak_learners_weights;
+    std::vector<Classifier *> weak_learners;
     double decision_threshold;
 };
 

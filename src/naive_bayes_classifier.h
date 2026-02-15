@@ -23,8 +23,6 @@
 #include "classifier.h"
 #include "classifier_factory.h"
 
-using namespace std;
-
 #ifndef NAIVEBAYESCLASSIFIER_H_
 #define NAIVEBAYESCLASSIFIER_H_
 
@@ -39,7 +37,7 @@ public:
     ~NaiveBayesClassifier ();
 
     // declared virtual in Classifier
-    void   train(const Dataset & training_dataset, const vector<double> &weights);
+    void   train(const Dataset & training_dataset, const std::vector<double> &weights);
     double response(const DataInstance & data_instance) const;
     int    classify(const DataInstance & data_instance) const;
 
@@ -49,7 +47,7 @@ private:
     int learners_to_add;
 
     double decision_threshold;
-    vector<Classifier *> weak_learners;
+    std::vector<Classifier *> weak_learners;
 };
 
 #endif

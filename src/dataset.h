@@ -24,9 +24,7 @@
 #ifndef DATASET
 #define DATASET
 
-using namespace std;
-
-#define DataInstance vector<double>
+#define DataInstance std::vector<double>
 
 class Dataset {
     
@@ -56,8 +54,8 @@ public:
 
 protected:
     
-    vector< DataInstance > data;
-    vector< int > labels;
+    std::vector< DataInstance > data;
+    std::vector< int > labels;
 
 };
 

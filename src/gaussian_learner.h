@@ -35,7 +35,7 @@ public:
     GaussianLearner(unsigned int feature_index);
     ~GaussianLearner();
 
-    void train(const Dataset & training_dataset, const vector<double> &data_weights);
+    void train(const Dataset & training_dataset, const std::vector<double> &data_weights);
     double response(const DataInstance & data_instance) const;
     int    classify(const DataInstance & data_instance) const;
 
