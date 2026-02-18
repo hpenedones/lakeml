@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "src/boosted_classifier.h"
 #include "src/classifier_factory.h"
 #include "src/csv_loader.h"
 #include "src/dataset.h"
@@ -99,6 +100,24 @@ int main(int argc, char **argv) {
             ++correct;
     }
     double accuracy = 100.0 * correct / static_cast<double>(binary_dataset.size());
+    std::cout << "Training accuracy: " << std::fixed << std::setprecision(1)
+              << accuracy << "% (" << correct << "/" << binary_dataset.size() << ")"
+              << std::endl;
+
+    // --- AdaBoost Binary Classification Demo ---
+    std::cout << "\n=== AdaBoost Classification (Setosa vs. Others) ===" << std::endl;
+
+    BoostedClassifier boosted(&factory, 10, 4);
+    boosted.train(binary_dataset, weights);
+
+    correct = 0;
+    for (size_t i = 0; i < binary_dataset.size(); ++i) {
+        if (boosted.classify(binary_dataset[i]) == binary_dataset.getLabelAt(i))
+            ++correct;
+    }
+    accuracy = 100.0 * correct / static_cast<double>(binary_dataset.size());
+
+    std::cout << "Weak learners: " << boosted.getNumWeakLearners() << std::endl;
     std::cout << "Training accuracy: " << std::fixed << std::setprecision(1)
               << accuracy << "% (" << correct << "/" << binary_dataset.size() << ")"
               << std::endl;
