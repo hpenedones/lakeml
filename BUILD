@@ -17,6 +17,7 @@ cc_library(
             "src/boosted_classifier.h",
             "src/classifier.h",
             "src/classifier_factory.h",
+            "src/csv_loader.h",
             "src/dataset.h",
             "src/exponential_loss.h",
             "src/gaussian_learner.h",
@@ -33,5 +34,12 @@ cc_library(
 cc_binary(
     name = "lakeml-demo",
     srcs = ["demo/demo.cpp"],
+    deps = [":lakeml-lib"],
+)
+
+cc_binary(
+    name = "lakeml-iris-demo",
+    srcs = ["demo/iris_demo.cpp"],
+    data = ["data/iris.csv"],
     deps = [":lakeml-lib"],
 )
