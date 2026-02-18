@@ -44,3 +44,12 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+cc_test(
+    name = "csv_loader_test",
+    srcs = ["csv_loader_test.cc"],
+    deps = [
+        "//:lakeml-lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
