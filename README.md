@@ -38,6 +38,24 @@ The Iris demo loads `data/iris.csv` and demonstrates:
 - **K-means clustering** with k=3, showing cluster assignments vs. true class labels
 - **Naive Bayes binary classification** distinguishing *Iris setosa* from the other two species
 
+Example output:
+```
+Loading dataset from: data/iris.csv
+Loaded 150 samples with 4 features.
+
+=== K-means Clustering (k=3) ===
+Converged in 11 iterations.
+
+Samples per class assigned to each cluster:
+Class               Cluster0  Cluster1  Cluster2
+Iris-setosa         0         50        0
+Iris-versicolor     47        0         3
+Iris-virginica      14        0         36
+
+=== Naive Bayes Classification (Setosa vs. Others) ===
+Training accuracy: 98.7% (148/150)
+```
+
 ## Testing
 
 Run all tests:
